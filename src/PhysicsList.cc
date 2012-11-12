@@ -73,7 +73,6 @@ void PhysicsList::ConstructProcess()
   AddTransportation();
   RadioactiveDecay();
 	GeneralPhysics();
-  
 }
 
 void PhysicsList::GeneralPhysics()

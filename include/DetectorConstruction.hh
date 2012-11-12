@@ -9,6 +9,8 @@
 #include "G4LogicalVolume.hh"
 #include "globals.hh"
 
+class SensitiveDetector;
+
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
@@ -29,14 +31,36 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
   private:
   
-		void ConstructMask(G4Material* mat,G4LogicalVolume* World_log,G4double pixsize,G4double height);   
-		void ConstructDetector(G4Material* mat,G4LogicalVolume* World_log,G4double mask_dist); 
+		void ConstructMask();   
+		void ConstructDetector(); 
+		void DefineMaterials();
 
 		G4double detDistToMask;
 		G4double maskPixSize;
 		G4double maskHeight;   
     G4double worldSize;
 		DetectorMessenger* detMess;
+
+		G4RotationMatrix* rotm;
+
+		G4double density,natoms;
+  	G4int ncomponents;
+  	G4Material* Air; G4Material* Pb;
+  	G4Material* Al;  G4Material* Cd;
+  	G4Material* Zn;  G4Material* Te;
+  	G4Material* CdZnTe;
+
+		G4VSolid* pixel_sol;  			G4VSolid* strip_sol;
+		G4LogicalVolume* pixel_log; G4LogicalVolume* strip_log;
+		G4VPhysicalVolume* mask_phys;
+
+		G4VSolid* detect_sol; 			G4LogicalVolume* detect_log; 
+		G4VPhysicalVolume* detect_phys; 
+
+		G4VSolid* World_sol;						G4LogicalVolume* World_log;		
+    G4VPhysicalVolume* World_phys;  
+
+		SensitiveDetector* sensDet;
 
 };
 

@@ -7,8 +7,8 @@
 class DetectorConstruction;
 class G4UIdirectory;
 class G4UIcmdWithAString;
-class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithoutParameter;
+class G4UIcmdWithADoubleAndUnit;
 
 class DetectorMessenger: public G4UImessenger
 {

@@ -12,6 +12,7 @@ main file for the simulation
 #include "DetectorConstruction.hh"
 #include "PhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
+#include "RunAction.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
@@ -37,6 +38,9 @@ int main(int argc,char** argv) {
 
   PrimaryGeneratorAction* prim  = new PrimaryGeneratorAction();        
   runManager->SetUserAction(prim);
+
+	RunAction* runAct = new RunAction();
+	runManager->SetUserAction(runAct);
     
   //Initialize G4 kernel
   runManager->Initialize();

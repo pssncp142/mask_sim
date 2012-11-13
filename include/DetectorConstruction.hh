@@ -10,6 +10,7 @@
 #include "globals.hh"
 
 class SensitiveDetector;
+class G4Element;
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -39,15 +40,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4double maskPixSize;
 		G4double maskHeight;   
     G4double worldSize;
+		G4int calls;
 		DetectorMessenger* detMess;
 
 		G4RotationMatrix* rotm;
 
-		G4double density,natoms;
-  	G4int ncomponents;
   	G4Material* Air; G4Material* Pb;
-  	G4Material* Al;  G4Material* Cd;
-  	G4Material* Zn;  G4Material* Te;
+  	G4Material* Al;  G4Element* Cd;
+  	G4Element* Zn;  G4Element* Te;
   	G4Material* CdZnTe;
 
 		G4VSolid* pixel_sol;  			G4VSolid* strip_sol;

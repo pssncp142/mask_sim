@@ -21,6 +21,7 @@
 #include "G4SolidStore.hh"
 
 #include "G4SDManager.hh"
+#include "G4RunManager.hh"
 
 DetectorConstruction::DetectorConstruction()
 {
@@ -28,6 +29,7 @@ DetectorConstruction::DetectorConstruction()
 	detDistToMask = 34*mm;
 	maskPixSize  = 1.2*mm;
 	maskHeight = 2*mm;
+	calls = 0;
 	
 	detMess = new DetectorMessenger(this); 
  }
@@ -54,11 +56,15 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	ConstructDetector();
   ConstructMask();
   
+	if (calls >= 0)
+	{
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
   sensDet = new SensitiveDetector("/SensDetector");
   SDman->AddNewDetector(sensDet);
   detect_log->SetSensitiveDetector(sensDet);
-	
+	}	
+
+	calls++;
   return World_phys;
 } 
 
@@ -160,6 +166,6 @@ void DetectorConstruction::SetMaskHeight(G4double val)
 #include "G4RunManager.hh"
 
 void DetectorConstruction::UpdateGeometry()
-{	
+{
 	G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
 }

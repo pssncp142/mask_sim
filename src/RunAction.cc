@@ -15,11 +15,7 @@ RunAction::~RunAction()
 
 G4Run* RunAction::GenerateRun()
 {
-	
-	G4cout << "Run Started...!!" << G4endl;
-	//G4cout << SDName[0] << G4endl;
 	Run* userRun = new Run(SDName);
-  //userRun->SetRunID(m_nRunID);
   return userRun;
 }
 
@@ -29,9 +25,9 @@ void RunAction::BeginOfRunAction(const G4Run* myRun)
 	G4cout << G4endl <<
 	"***************************************************************************************" <<
 	G4endl <<
-	"                                 Run " << ++NofRuns << " started" << 
+	"* + + + + + + + + + + + + + + + + + | Run " << ++NofRuns << " started | + + + + + + + + + + + + + + + + *" << 
 	G4endl <<
-	"---------------------------------------------------------------------------------------" << 
+	"*-------------------------------------------------------------------------------------*" << 
 	G4endl << G4endl;
 	//G4RunManager()::GeometryHasBeenModified();
 }
@@ -43,9 +39,9 @@ void RunAction::EndOfRunAction(const G4Run* myRun)
 	if (NofRuns != 0)
 	G4cout <<
 	G4endl <<
-	"---------------------------------------------------------------------------------------" << 
+	"*-------------------------------------------------------------------------------------*" << 
 	G4endl <<
-	"                                 Run " << NofRuns << " finished" << 
+	"* + + + + + + + + + + + + + + + + + | Run " << NofRuns << "  finished | + + + + + + + + + + + + + + + *" << 
 	G4endl << 
 	"***************************************************************************************" <<	
 	G4endl;

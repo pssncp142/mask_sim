@@ -43,10 +43,10 @@ int main(int argc,char** argv) {
 	runManager->SetUserAction(runAct);
     
   //Initialize G4 kernel
-  runManager->Initialize();
+  //runManager->Initialize();
     
   // get the pointer to the User Interface manager 
-    G4UImanager* UI = G4UImanager::GetUIpointer();  
+  G4UImanager* UI = G4UImanager::GetUIpointer();  
 
   if (argc!=1)   // batch mode  
     { 

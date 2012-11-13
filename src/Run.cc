@@ -7,7 +7,7 @@
 
 Run::Run(const std::vector<G4String> SDName) : G4Run()
 {
-	G4cout << "tralala" << G4endl;
+
 }
 
 Run::~Run()
@@ -25,7 +25,7 @@ void Run::RecordEvent(const G4Event* aEvent)
   TrackHitCollection * HC = (TrackHitCollection*)(HCE->GetHC(collectionID));
 
 	G4int NbHits = HC->entries()-1;  
-  TrackHit* thisHit = (*HC)[NbHits];
+  TrackHit* thisHit = (*HC)[NbHits];	
 
-	G4cout << "yeppa " << thisHit->GetID();
+	
 }

@@ -11,7 +11,6 @@ TrackHit::TrackHit()
 
 TrackHit::TrackHit(const TrackHit& right) : G4VHit()
 {
-	ID = right.ID;
 }
 
 TrackHit::~TrackHit()
@@ -21,7 +20,6 @@ TrackHit::~TrackHit()
 
 const TrackHit& TrackHit::operator=(const TrackHit& right)
 {
-	ID = right.ID;
 	return *this;
 }
 

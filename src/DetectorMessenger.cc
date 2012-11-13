@@ -20,19 +20,19 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* myDet)
   maskHeightCmd->SetGuidance("Set the height of the mask.");
   maskHeightCmd->SetUnitCategory("Length");
   maskHeightCmd->SetParameterName("choice",false);
-  maskHeightCmd->AvailableForStates(G4State_Idle);
+  maskHeightCmd->AvailableForStates(G4State_PreInit);
 
 	maskPixSizeCmd = new G4UIcmdWithADoubleAndUnit("/mask_sim/geom/mask/pixSize",this);
   maskPixSizeCmd->SetGuidance("Set the height of the mask.");
   maskPixSizeCmd->SetUnitCategory("Length");
   maskPixSizeCmd->SetParameterName("choice",false);
-  maskPixSizeCmd->AvailableForStates(G4State_Idle);
+  maskPixSizeCmd->AvailableForStates(G4State_PreInit);
 
 	detDistToMaskCmd = new G4UIcmdWithADoubleAndUnit("/mask_sim/geom/det/distToMask",this);
   detDistToMaskCmd->SetGuidance("Set the height of the mask.");
   detDistToMaskCmd->SetUnitCategory("Length");
   detDistToMaskCmd->SetParameterName("choice",false);
-  detDistToMaskCmd->AvailableForStates(G4State_Idle);
+  detDistToMaskCmd->AvailableForStates(G4State_PreInit);
 
 	updateCmd = new G4UIcmdWithoutParameter("/mask_sim/geom/update",this);
   updateCmd->SetGuidance("Updates geometry.");
@@ -67,4 +67,3 @@ void DetectorMessenger::SetNewValue(G4UIcommand* cmd, G4String val)
 		detector->UpdateGeometry();		
 	}
 }
-

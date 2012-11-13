@@ -18,16 +18,15 @@ class SensitiveDetector : public G4VSensitiveDetector
 	SensitiveDetector(const G4VSensitiveDetector &right);
 	~SensitiveDetector();
 
-	 void Initialize(G4HCofThisEvent*);
-   G4bool ProcessHits(G4Step*, G4TouchableHistory*);
-   void EndOfEvent(G4HCofThisEvent*);
+	void Initialize(G4HCofThisEvent*);
+  G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+  void EndOfEvent(G4HCofThisEvent*);
 
 	private :
 
 	TrackHitCollection* GetInfo() {return HitCollection;};
-
-	G4int a;
 	
+	G4int a;
 	G4Track* aTrack;
 	G4StepPoint* preStep;
 	G4StepPoint* postStep;

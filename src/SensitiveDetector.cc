@@ -11,35 +11,35 @@
 
 SensitiveDetector::SensitiveDetector(G4String sname) : G4VSensitiveDetector(sname)
 {
+	a=0;
 	G4String HCname; 
 	collectionName.insert(HCname="HitCollection");
-	a=2;
+	G4cout << collectionName[0] << " tralla " << G4endl;
 }
 
 SensitiveDetector::~SensitiveDetector()
 {
-
+	//delete HitCollection;
+	G4cout << "Hitcollection is deleted" << G4endl;
 }
 
 void SensitiveDetector::Initialize(G4HCofThisEvent* hitsColl)
 {
-	G4cout << SensitiveDetectorName << G4endl;
-	HitCollection = new TrackHitCollection(SensitiveDetectorName,collectionName[0]);	
+	HitCollection = new TrackHitCollection(SensitiveDetectorName,collectionName[0]);
   G4int HCID =  G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
 	hitsColl->AddHitsCollection(HCID,HitCollection); 
-	a=3;
+	G4cout << "initialise " << a << G4endl;
 }
 
 G4bool SensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory* THist)
 {
-	HitCollection = GetInfo();
+	//HitCollection = GetInfo();
 	aTrack = aStep->GetTrack();
 	preStep = aStep->GetPreStepPoint();
 	postStep = aStep->GetPostStepPoint();
 	//G4double totEn = aStep->GetTotalEnergyDeposit();	
 
 	// step information
-
 
 	// previous point information
 	G4VPhysicalVolume * prePV  			 =  preStep->GetPhysicalVolume();
@@ -66,35 +66,32 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory* THist)
 	// track information
 	G4int 							trackID      =  aTrack->GetTrackID();
 	G4int 							parentID     =  aTrack->GetParentID();
-
+	G4String            parName      =  aTrack->GetParticleDefinition()->GetParticleName(); 
 	G4cout << "step point.." << G4endl;
 
 	thisHit = new TrackHit();
 
 	//Information to be stored step by step
 	//*****************************************************************
-	//a=10;
-	thisHit->SetID(5);
-	G4cout << postMom << " " << a << G4endl; 
-	G4cout << HitCollection << G4endl;
+	thisHit parName
 	//*****************************************************************
 	HitCollection->insert( thisHit );
 
 	G4cout << "process event.." << G4endl;
 
-	return true;
+	return false;
 }
 
 void SensitiveDetector::EndOfEvent(G4HCofThisEvent* hitsColl)
 {
 	//G4cout << thisHit->GetID() << G4endl;
-	G4cout << "end of event.."  << a << G4endl;
+	G4cout << a << "  end of event.."  << HitCollection <<G4endl;
 	thisHit = new TrackHit();
 	//Total information about all event
 	//*****************************************************************
 
 
 	//*****************************************************************
-	HitCollection->insert(thisHit);
+	HitCollection->insert( thisHit );
 }
 

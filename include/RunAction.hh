@@ -14,13 +14,14 @@ public:
   RunAction();
   ~RunAction();
 
-	//G4Run* GenerateRun();
+	G4Run* GenerateRun();
   void   BeginOfRunAction(const G4Run*);
   void   EndOfRunAction(const G4Run*);
     
 private:
 	//G4RunManager* runManager;
 	G4int NofRuns;
+	std::vector<G4String> SDName; 
 
 };
 

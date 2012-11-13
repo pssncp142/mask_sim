@@ -2,16 +2,14 @@
 #define Run_h 1
 
 #include "G4Run.hh"
-
-#include <vector>
-
-class G4Step;
+#include "G4Event.hh"
 
 class Run : public G4Run 
 {
-	Run(const std::vector<G4String> mfdName);
+	public :
+	Run(const std::vector<G4String> SDName);
 	~Run();
-	void RecordEvent(G4Step*);
+	void RecordEvent(const G4Event*);
 };
 
 #endif

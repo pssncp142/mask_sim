@@ -25,9 +25,10 @@
 DetectorConstruction::DetectorConstruction()
 {
 	worldSize = 1*m;
-	maskHeight = 2*mm;
 	detDistToMask = 34*mm;
 	maskPixSize  = 1.2*mm;
+	maskHeight = 2*mm;
+	
 	detMess = new DetectorMessenger(this); 
  }
 
@@ -42,24 +43,24 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4PhysicalVolumeStore::GetInstance()->Clean();
   G4LogicalVolumeStore::GetInstance()->Clean();
   G4SolidStore::GetInstance()->Clean();
- 
+
 	DefineMaterials();
 
   World_sol = new G4Box("World",worldSize/2,worldSize/2,worldSize/2);		   
   World_log = new G4LogicalVolume(World_sol,Air,"World");		
   World_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),World_log,"World",0,false,0);  
   World_log->SetVisAttributes(G4VisAttributes::Invisible);
- 
-  ConstructMask();
-  ConstructDetector();
 
+	ConstructDetector();
+  ConstructMask();
+  
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
-  sensDet = new SensitiveDetector("SensDetector");
+  sensDet = new SensitiveDetector("/SensDetector");
   SDman->AddNewDetector(sensDet);
   detect_log->SetSensitiveDetector(sensDet);
 	
   return World_phys;
-}
+} 
 
 void DetectorConstruction::ConstructDetector()
 {
@@ -124,17 +125,20 @@ void DetectorConstruction::ConstructMask()
 
 void DetectorConstruction::DefineMaterials()
 {
+	G4String symbol;
+	G4double a,density;
+	G4int z,natoms,ncomponents;
 	#define GET_MATERIAL G4NistManager::Instance()->FindOrBuildMaterial
   Air = GET_MATERIAL("G4_AIR"); 
   Pb = GET_MATERIAL("G4_Pb");
   Al = GET_MATERIAL("G4_Al");
-  Cd = GET_MATERIAL("G4_Cd");
-  Zn = GET_MATERIAL("G4_Zn");
-  Te = GET_MATERIAL("G4_Te");
-  CdZnTe = new G4Material("CdZnTe",density=5.78*g/cm3,ncomponents=3);
-  CdZnTe->AddMaterial(Cd,natoms=0.45);
-  CdZnTe->AddMaterial(Zn,natoms=0.05);
-  CdZnTe->AddMaterial(Te,natoms=0.5);
+	G4Element* Cd = new G4Element("Cadmium", symbol="Cd", z=48, a=112.411*g/mole);
+  G4Element* Zn = new G4Element("Zinc", symbol="Zn", z=30, a=65.39*g/mole);
+  G4Element* Te = new G4Element("Tellurium", symbol="Te", z=52, a=127.6*g/mole);
+	CdZnTe = new G4Material("CdZnTe",density=5.78*g/cm3,ncomponents=3);
+  CdZnTe->AddElement(Cd,natoms=9);
+  CdZnTe->AddElement(Zn,natoms=1);
+  CdZnTe->AddElement(Te,natoms=10);
 	#undef GET_MATERIAL
 }
 

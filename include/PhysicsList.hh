@@ -15,10 +15,11 @@ class PhysicsList: public G4VUserPhysicsList
    ~PhysicsList();
 
   protected:
-    // Construct particle and physics
+    
     void ConstructParticle();
     void ConstructProcess(); 
 		void RadioactiveDecay();
+		void AtomicDeexcitation();
 		void GeneralPhysics();
     void SetCuts();   
 };

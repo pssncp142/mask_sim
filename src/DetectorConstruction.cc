@@ -56,15 +56,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	ConstructDetector();
   ConstructMask();
   
-	if (calls >= 0)
-	{
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
   sensDet = new SensitiveDetector("/SensDetector");
+	detect_log->SetSensitiveDetector(sensDet);	
   SDman->AddNewDetector(sensDet);
-  detect_log->SetSensitiveDetector(sensDet);
-	}	
 
-	calls++;
   return World_phys;
 } 
 

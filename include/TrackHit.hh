@@ -45,6 +45,8 @@ public :
   G4double      			GetPostTotEn()    {return postTotEn;};
   G4ThreeVector 			GetPostMom()      {return postMom;};
   G4double      			GetPostKinEn()    {return postKinEn;};
+	
+	G4String            GetParName()      {return parName;};
 	/*************************************************************************************/
   //SETS
 	void			SetPrePV(G4VPhysicalVolume* val)        {prePV=val;};
@@ -67,7 +69,7 @@ public :
   void			SetPostMom(G4ThreeVector val)       		{postMom=val;};
   void			SetPostKinEn(G4double val)     					{postKinEn=val;};
 
-	
+	void      SetParName(G4String val)								{parName=val;};
 	/*************************************************************************************/	
 private :	
 	/*************************************************************************************/
@@ -91,6 +93,8 @@ private :
   G4double      			postTotEn    ;
   G4ThreeVector 			postMom      ;
   G4double      			postKinEn    ;
+
+	G4String            parName      ;  
 	/*************************************************************************************/
 
 };

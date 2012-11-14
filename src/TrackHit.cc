@@ -6,11 +6,14 @@ G4Allocator<TrackHit> TrackHitAllocator;
 
 TrackHit::TrackHit()
 {
-	G4cout << "track hit" << G4endl;
+	
 }
 
 TrackHit::TrackHit(const TrackHit& right) : G4VHit()
 {
+	prePVName = right.prePVName;
+	parName = right.parName;
+	preTotEn = right.preTotEn;
 }
 
 TrackHit::~TrackHit()
@@ -20,6 +23,9 @@ TrackHit::~TrackHit()
 
 const TrackHit& TrackHit::operator=(const TrackHit& right)
 {
+	preTotEn = right.preTotEn;
+	prePVName = right.prePVName;
+	parName = right.parName;
 	return *this;
 }
 

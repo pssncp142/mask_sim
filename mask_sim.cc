@@ -13,6 +13,7 @@ main file for the simulation
 #include "PhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
+#include "G4EmStandardPhysics_option3.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
@@ -35,6 +36,7 @@ int main(int argc,char** argv) {
   PhysicsList* physList = new PhysicsList();
   runManager->SetUserInitialization(detCon);
   runManager->SetUserInitialization(physList);
+	//runManager->SetUserInitialization(new G4EmStandardPhysics_option3());
 
   PrimaryGeneratorAction* prim  = new PrimaryGeneratorAction();        
   runManager->SetUserAction(prim);

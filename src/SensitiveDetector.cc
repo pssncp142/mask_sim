@@ -84,7 +84,7 @@ void SensitiveDetector::EndOfEvent(G4HCofThisEvent* hitsColl)
 
 	//Total information about all event
 	//*****************************************************************
-	thisHit->SetPrePVName("cücük");
+
 	//*****************************************************************
 
 	//G4cout << a << G4endl;

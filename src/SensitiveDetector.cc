@@ -63,13 +63,16 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory* THist)
 	G4int 							trackID      =  aTrack->GetTrackID();
 	G4int 							parentID     =  aTrack->GetParentID();
 	G4String            parName      =  aTrack->GetParticleDefinition()->GetParticleName(); 
-
+	G4double						lTime				 =  aTrack->GetLocalTime(); 
 	TrackHit* thisHit = new TrackHit();
 
 	//Information to be stored step by step
 	//*****************************************************************
 	thisHit->SetParName(parName);
-	thisHit->SetPreTotEn(postTotEn);
+	thisHit->SetPreTotEn(preTotEn);
+	thisHit->SetTrackID(trackID);
+	thisHit->SetParentID(parentID);
+	thisHit->SetLocalTime(lTime);
 	//*****************************************************************
 
 	a = HitCollection->insert( thisHit );

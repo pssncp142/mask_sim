@@ -47,6 +47,9 @@ public :
   G4double      			GetPostKinEn()    {return postKinEn;};
 	
 	G4String            GetParName()      {return parName;};
+	G4int            		GetTrackID()      {return trackID;};
+	G4int            		GetParentID()     {return parentID;};
+	G4double						GetLocalTime()		{return lTime;};
 	/*************************************************************************************/
   //SETS
 	void			SetPrePV(G4VPhysicalVolume* val)        {prePV=val;};
@@ -70,6 +73,9 @@ public :
   void			SetPostKinEn(G4double val)     					{postKinEn=val;};
 
 	void      SetParName(G4String val)								{parName=val;};
+	void      SetTrackID(G4int val)										{trackID=val;};
+	void      SetParentID(G4int val)									{parentID=val;};
+	void 			SetLocalTime(G4double val)							{lTime=val;};
 	/*************************************************************************************/	
 private :	
 	/*************************************************************************************/
@@ -95,6 +101,9 @@ private :
   G4double      			postKinEn    ;
 
 	G4String            parName      ;  
+	G4int								trackID      ;
+	G4int								parentID		 ;
+	G4double						lTime				 ;			
 	/*************************************************************************************/
 
 };

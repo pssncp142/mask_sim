@@ -19,6 +19,8 @@ Run::~Run()
 void Run::RecordEvent(const G4Event* aEvent)
 {
 
+	G4double time;
+	
 	G4HCofThisEvent* HCE = aEvent->GetHCofThisEvent();
   if (!HCE) return;
   
@@ -32,9 +34,10 @@ void Run::RecordEvent(const G4Event* aEvent)
   
 	for (int i=0;i<NbHits;i++)
 	{
-		TrackHit* thisHit = (*HC)[i];	
-		G4cout << thisHit->GetParName() << " " << G4BestUnit(thisHit->GetPreTotEn(),"Energy") << " " << G4endl;
-		//G4BestUnit(thisHit->GetPrePVName(),"Energy") << G4endl;
+		TrackHit* thisHit = (*HC)[i];	 
+		G4cout <<  thisHit->GetParentID() << "  "  << thisHit->GetTrackID() << "  " << 
+							thisHit->GetParName() << "             " << G4BestUnit(thisHit->GetPreTotEn(),"Energy") << "              " << 
+							G4BestUnit(thisHit->GetLocalTime(),"Time") << G4endl;
 	}
 
 }

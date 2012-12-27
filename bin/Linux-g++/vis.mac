@@ -5,9 +5,9 @@
 ###################################################
 # special geometry commands                       #
 ###################################################
-/mask_sim/geom/mask/height 2.5 mm
+/mask_sim/geom/mask/height 2 mm
 /mask_sim/geom/mask/pixSize 1.2 mm
-/mask_sim/geom/det/distToMask 34 mm	
+/mask_sim/geom/det/distToMask 42 mm	
 
 ###################################################
 /run/initialize
@@ -29,7 +29,7 @@
 /gps/particle ion
 /gps/ion 27 57
 /gps/energy 0
-/gps/position 10 10 -34 mm
+/gps/position 0 0 50 mm
 /gps/number 1
 ##################################################
 #/gps/particle gamma

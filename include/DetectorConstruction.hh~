@@ -32,7 +32,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
   private:
   
-		void ConstructInclinedBox();
 		void ConstructMask();   
 		void ConstructDetector(); 
 		void DefineMaterials();
@@ -57,9 +56,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		G4VSolid* detect_sol; 			G4LogicalVolume* detect_log; 
 		G4VPhysicalVolume* detect_phys; 
-
-		G4VSolid* inclbox_sol;      G4LogicalVolume* inclbox_log;
-		G4VPhysicalVolume* inclbox_phys;
 
 		G4VSolid* World_sol;						G4LogicalVolume* World_log;		
     G4VPhysicalVolume* World_phys;  

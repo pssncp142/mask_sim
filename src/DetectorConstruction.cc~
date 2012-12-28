@@ -74,8 +74,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 void DetectorConstruction::ConstructAlBoxCover()
 {
-//!!! Just little bit changes over the old simulation...
-
 	  // Al box cover dimension.
     G4double AlBox1_x = 9.0*cm/2.0;
     G4double AlBox1_y = 11.5*cm/2.0;

@@ -32,6 +32,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
   private:
   
+		void ConstructAlBoxCover();
+		void ConstructInclinedBox();
 		void ConstructMask();   
 		void ConstructDetector(); 
 		void DefineMaterials();
@@ -40,6 +42,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4double maskPixSize;
 		G4double maskHeight;   
     G4double worldSize;
+		G4bool maskOn;
+		G4bool detectorOn;
+		G4bool inclboxOn;
+		G4bool AlBoxCoverOn;
 		G4int calls;
 		DetectorMessenger* detMess;
 
@@ -50,12 +56,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   	G4Element* Zn;  G4Element* Te;
   	G4Material* CdZnTe;
 
-		G4VSolid* pixel_sol;  			G4VSolid* strip_sol;
-		G4LogicalVolume* pixel_log; G4LogicalVolume* strip_log;
-		G4VPhysicalVolume* mask_phys;
+		G4LogicalVolume* detect_log;
 
-		G4VSolid* detect_sol; 			G4LogicalVolume* detect_log; 
+		G4VPhysicalVolume* mask_phys; 
 		G4VPhysicalVolume* detect_phys; 
+		G4VPhysicalVolume* inclbox_phys;
+		G4VPhysicalVolume* AlBoxCover_Phys;
 
 		G4VSolid* World_sol;						G4LogicalVolume* World_log;		
     G4VPhysicalVolume* World_phys;  

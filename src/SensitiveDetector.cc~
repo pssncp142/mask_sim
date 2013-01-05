@@ -77,7 +77,6 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory* THist)
 	G4double						lTime				 =  aTrack->GetLocalTime(); 
 
 	TrackHit* thisHit = new TrackHit();
-
 	//Information to be stored step by step
 	//*****************************************************************
 	thisHit->SetParName(parName);

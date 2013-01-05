@@ -1,6 +1,10 @@
 /**********************************************************************************
-
+* DetectorConstruction.cc (Yigit Dallilar)
+* 
+* Geometry of the simluation is defined here...
+* 		
 ***********************************************************************************/
+
 #include "DetectorMessenger.hh"
 #include "DetectorConstruction.hh"
 #include "SensitiveDetector.hh"
@@ -24,24 +28,33 @@
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
 
+/**********************************************************************************************/
+
 DetectorConstruction::DetectorConstruction()
 {
+	//global options to be used in geometry
   worldSize = 1*m;
   detDistToMask = 34*mm;
   maskPixSize  = 1.2*mm;
   maskHeight = 2*mm;
-  maskOn = 0;
-	detectorOn = 0;
-	inclboxOn = 0;
-	AlBoxCoverOn=1;
+  maskOn = 1;
+  detectorOn = 1;
+  inclboxOn = 0;
+  AlBoxCoverOn = 0;
+  collimatorType = 0;
+  sourceHolderType = 0;
   
   detMess = new DetectorMessenger(this); 
 }
+
+/**********************************************************************************************/
 
 DetectorConstruction::~DetectorConstruction()
 {
   delete detMess;
 }
+
+/**********************************************************************************************/
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
@@ -57,20 +70,24 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   World_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),World_log,"World",0,false,0);  
   World_log->SetVisAttributes(G4VisAttributes::Invisible);
   
-	if (AlBoxCoverOn == 1) ConstructAlBoxCover();
-	if (inclboxOn == 1) ConstructInclinedBox();
-  if (detectorOn == 1) 
-	{
-		ConstructDetector();
- 		G4SDManager* SDman = G4SDManager::GetSDMpointer();
-  	sensDet = new SensitiveDetector("/SensDetector");
-  	detect_log->SetSensitiveDetector(sensDet);	
-  	SDman->AddNewDetector(sensDet);
-	}
-  if (maskOn == 1) ConstructMask();
+	G4cout <<  "******************* GEOMETRY OPTIONS ************************" << G4endl << G4endl;
+	ConstructCollimator(collimatorType);
+	ConstructSourceHolder(sourceHolderType);
+	if (AlBoxCoverOn == 1) {ConstructAlBoxCover();} else 
+	{G4cout << "- No Aluminum Box Cover" << G4endl;}
+	if (inclboxOn == 1) {ConstructInclinedBox();} else
+	{G4cout << "- No Inclined Box" << G4endl;}
+  if (detectorOn == 1) {ConstructDetector();} else
+	{G4cout << "- No Detector" << G4endl;}
+  if (maskOn == 1) {ConstructMask();} else 
+	{G4cout << "- No Coded Mask" << G4endl;}
+
+	G4cout << G4endl << "**************** GEOMETRY IS INITIALISED ********************" << G4endl << G4endl;
     
   return World_phys;
 } 
+
+/**********************************************************************************************/
 
 void DetectorConstruction::ConstructAlBoxCover()
 {
@@ -104,7 +121,40 @@ void DetectorConstruction::ConstructAlBoxCover()
     
     // Is volume visible?
     AlBoxCover_log->SetVisAttributes(G4Color::Blue());
+		{G4cout << "- Aluminum Box Cover is build..." << G4endl;}
 }
+
+/**********************************************************************************************/
+
+void DetectorConstruction::ConstructCollimator(G4int type)
+{
+	switch (type)
+	{
+		case 0 :  
+			G4cout << "- No Collimator" << G4endl;		
+			break;
+		case 1 :
+			G4cout << "- Collimator Type 1 is build..." << G4endl;
+			break;
+	}	
+}
+
+/**********************************************************************************************/
+
+void DetectorConstruction::ConstructSourceHolder(G4int type)
+{
+	switch (type)
+	{
+		case 0 :
+			G4cout << "- No Source Holder" << G4endl;  
+			break;
+		case 1 :
+			G4cout << "- Source Holder Type 1 is build..." << G4endl;
+			break;
+	}
+}
+
+/**********************************************************************************************/
 
 void DetectorConstruction::ConstructInclinedBox()
 {
@@ -117,7 +167,10 @@ void DetectorConstruction::ConstructInclinedBox()
 	G4LogicalVolume* inclbox_log = new G4LogicalVolume(inclbox_sol,Al,"inclbox_log");
 	inclbox_log->SetVisAttributes(G4Color::Red());
 	inclbox_phys = new G4PVPlacement(0,G4ThreeVector(0,0,-detDistToMask*0.5)*mm,inclbox_log,"inclbox_phys",World_log,false,0);
+	G4cout << "- Inclined Box is build..." << G4endl;
 }
+
+/**********************************************************************************************/
 
 void DetectorConstruction::ConstructDetector()
 {
@@ -129,7 +182,16 @@ void DetectorConstruction::ConstructDetector()
   detect_phys = new G4PVPlacement(0,G4ThreeVector(-(19.54*0.5+1.2-0.34),-(19.54*0.5+1.2-0.34),-detDistToMask)*mm,detect_log,"detect_phys",World_log,false,0);
   detect_phys = new G4PVPlacement(0,G4ThreeVector(-(19.54*0.5+1.2-0.34),(19.54*0.5+1.2-0.34),-detDistToMask)*mm,detect_log,"detect_phys",World_log,false,0);
   detect_phys = new G4PVPlacement(0,G4ThreeVector((19.54*0.5+1.2-0.34),-(19.54*0.5+1.2-0.34),-detDistToMask)*mm,detect_log,"detect_phys",World_log,false,0);
+	
+	G4SDManager* SDman = G4SDManager::GetSDMpointer();
+  sensDet = new SensitiveDetector("/SensDetector");
+  detect_log->SetSensitiveDetector(sensDet);	
+  SDman->AddNewDetector(sensDet);
+
+	G4cout << "- Detectors are build..." << G4endl;
 }
+
+/**********************************************************************************************/
 
 void DetectorConstruction::ConstructMask()
 {
@@ -178,7 +240,11 @@ void DetectorConstruction::ConstructMask()
   mask_phys = new G4PVPlacement(0,G4ThreeVector(-37,-37,0)*maskPixSize*mm,pixel_log,"mask_phys",World_log,false,0);
   mask_phys = new G4PVPlacement(0,G4ThreeVector(-37,37,0)*maskPixSize*mm,pixel_log,"mask_phys",World_log,false,0);
   mask_phys = new G4PVPlacement(0,G4ThreeVector(37,-37,0)*maskPixSize*mm,pixel_log,"mask_phys",World_log,false,0);	
+
+	G4cout << "- Coded Mask is build..." << G4endl;
 }
+
+/**********************************************************************************************/
 
 void DetectorConstruction::DefineMaterials()
 {
@@ -199,20 +265,19 @@ void DetectorConstruction::DefineMaterials()
 #undef GET_MATERIAL
 }
 
-void DetectorConstruction::SetDetDistToMask(G4double val)
-{
-  detDistToMask = val;
-}
+/**********************************************************************************************/
 
-void DetectorConstruction::SetMaskPixSize(G4double val)
-{
-  maskPixSize = val;
-}
+void DetectorConstruction::SetDetDistToMask(G4double val){detDistToMask = val;}
+void DetectorConstruction::SetMaskPixSize(G4double val){maskPixSize = val;}
+void DetectorConstruction::SetMaskHeight(G4double val){maskHeight = val;}
+void DetectorConstruction::SetMaskOn(G4bool val){maskOn = val;}
+void DetectorConstruction::SetDetectorOn(G4bool val){detectorOn = val;}
+void DetectorConstruction::SetInclboxOn(G4bool val){inclboxOn = val;}
+void DetectorConstruction::SetAlBoxCoverOn(G4bool val){AlBoxCoverOn = val;}
+void DetectorConstruction::SetCollimatorType(G4int val){collimatorType = val;}
+void DetectorConstruction::SetSourceHolderType(G4int val){sourceHolderType = val;}
 
-void DetectorConstruction::SetMaskHeight(G4double val)
-{
-  maskHeight = val;
-}
+/**********************************************************************************************/
 
 #include "G4RunManager.hh"
 
@@ -220,3 +285,6 @@ void DetectorConstruction::UpdateGeometry()
 {
   G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
 }
+
+/**********************************************************************************************/
+

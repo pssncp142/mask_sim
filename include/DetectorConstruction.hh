@@ -1,6 +1,8 @@
 /**************************************************************************
-
+* DetectorConstruction.hh (Yigit Dallilar)
+*
 ***************************************************************************/
+
 #ifndef DetectorConstruction_h
 #define DetectorConstruction_h 1
 
@@ -23,12 +25,24 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void SetMaskHeight(G4double);
 		void SetMaskPixSize(G4double);
 		void SetDetDistToMask(G4double);
+		void SetMaskOn(G4bool);
+		void SetDetectorOn(G4bool);
+		void SetInclboxOn(G4bool);
+		void SetAlBoxCoverOn(G4bool);
+		void SetCollimatorType(G4int);
+		void SetSourceHolderType(G4int);
 		void UpdateGeometry();
 
 		G4double GetWorldSize() {return worldSize;}; 
 		G4double GetmaskHeight() {return maskHeight;}; 
 		G4double GetmaskPixSize() {return maskPixSize;}; 
 		G4double GetdetDistToMask() {return detDistToMask;}; 
+		G4bool GetMaskOn() {return maskOn;};
+		G4bool GetDetectorOn() {return detectorOn;};
+		G4bool GetInclboxOn() {return inclboxOn;};
+		G4bool GetAlBoxCoverOn() {return AlBoxCoverOn;};
+		G4int GetCollimatorType() {return collimatorType;};
+		G4int GetSourceHolderType() {return sourceHolderType;};
 
   private:
   
@@ -36,6 +50,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void ConstructInclinedBox();
 		void ConstructMask();   
 		void ConstructDetector(); 
+		void ConstructCollimator(G4int);
+		void ConstructSourceHolder(G4int);
 		void DefineMaterials();
 
 		G4double detDistToMask;
@@ -46,6 +62,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4bool detectorOn;
 		G4bool inclboxOn;
 		G4bool AlBoxCoverOn;
+		G4int collimatorType;
+		G4int sourceHolderType;
+		
 		G4int calls;
 		DetectorMessenger* detMess;
 
@@ -67,7 +86,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* World_phys;  
 
 		SensitiveDetector* sensDet;
-
 };
 
 #endif

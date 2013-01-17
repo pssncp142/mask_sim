@@ -92,7 +92,7 @@ void PhysicsList::GeneralPhysics()
     G4ProcessManager* pmanager = particle->GetProcessManager();
     G4String particleName = particle->GetParticleName();
 
-		/*if (particleName == "gamma")
+		if (particleName == "gamma")
 		{	
 		  G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
       thePhotoElectricEffect->SetModel(new G4PEEffectFluoModel());      	
@@ -109,8 +109,8 @@ void PhysicsList::GeneralPhysics()
      	G4RayleighScattering* theRayleigh = new G4RayleighScattering();
      	theRayleigh->SetModel(new G4XrayRayleighModel());
      	pmanager->AddDiscreteProcess(theRayleigh);
-		}*/
-		/*if (particleName == "e-")
+		}
+		if (particleName == "e-")
 		{
       G4eMultipleScattering* msc = new G4eMultipleScattering();
       msc->SetStepLimitType(fUseDistanceToBoundary);
@@ -123,7 +123,7 @@ void PhysicsList::GeneralPhysics()
       G4eBremsstrahlung* eBrem = new G4eBremsstrahlung();
       eBrem->SetEmModel(new G4LivermoreBremsstrahlungModel());
       pmanager->AddProcess(eBrem,-1,3,3);
-		}*/
+		}
 		if (particleName == "e+")
 		{
 			pmanager->AddProcess(new G4eMultipleScattering, -1, 1, 1);

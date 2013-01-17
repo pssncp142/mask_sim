@@ -78,12 +78,13 @@ void Run::RecordEvent(const G4Event* aEvent)
       ofs.open("output/data.txt",std::iostream::app);
       if ((parName[i] == "gamma") or (parName[i]=="e-"))
       {
-        ofs << xx[i] << "  " << yy[i] << "  " << zz[i] << "  " << 
-        edep[i] << "  " << gTime[i] << endl; 
+        ofs << xx[i] << "  " << yy[i] << "  " << zz[i] << "  " << edep[i] << "  " << gTime[i] << endl; 
       }
       if(i==NbHits-1)
       { ofs << endl; }
       ofs.close();
     }
-  } 
+
+  }
+  
 }

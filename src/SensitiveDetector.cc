@@ -34,9 +34,9 @@ SensitiveDetector::~SensitiveDetector()
 
 void SensitiveDetector::Initialize(G4HCofThisEvent* hitsColl)
 {
-	HitCollection = new TrackHitCollection(SensitiveDetectorName,collectionName[0]);
+  HitCollection = new TrackHitCollection(SensitiveDetectorName,collectionName[0]);
   G4int HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-	hitsColl->AddHitsCollection(HCID,HitCollection); 
+  hitsColl->AddHitsCollection(HCID,HitCollection); 
 }
 
 /**********************************************************************************************/
@@ -46,49 +46,29 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory* THist)
 	aTrack = aStep->GetTrack();
 	preStep = aStep->GetPreStepPoint();
 	postStep = aStep->GetPostStepPoint();	
-	// step information
-
-	// previous point information
-	G4VPhysicalVolume * prePV  			 =  preStep->GetPhysicalVolume();
-  G4String            prePVName    =  prePV->GetName();
-  G4ThreeVector 			prePos       =  preStep->GetPosition();
-  G4ThreeVector 			preMomDir    =  preStep->GetMomentumDirection();
-  G4Material *  			preMat       =  preStep->GetMaterial();
-  G4String      			preMatname   =  preMat->GetName();
-  G4double      			preTotEn     =  preStep->GetTotalEnergy();
-  G4ThreeVector 			preMom       =  preStep->GetMomentum();
-  G4double      			preKinEn     =  preStep->GetKineticEnergy();
-
-	// post point information
-	G4VPhysicalVolume * postPV  		 =  postStep->GetPhysicalVolume();
-  G4String            postPVName   =  postPV->GetName();
-  G4ThreeVector 			postPos      =  postStep->GetPosition();
-  G4ThreeVector 			postMomDir   =  postStep->GetMomentumDirection();
-  G4Material *  			postMat      =  postStep->GetMaterial();
-  G4String      			postMatname  =  postMat->GetName();
-  G4double      			postTotEn    =  postStep->GetTotalEnergy();
-  G4ThreeVector 			postMom      =  postStep->GetMomentum();
-  G4double      			postKinEn    =  postStep->GetKineticEnergy();
 
 	// track information
-	G4int 							trackID      =  aTrack->GetTrackID();
-	G4int 							parentID     =  aTrack->GetParentID();
-	G4String            parName      =  aTrack->GetParticleDefinition()->GetParticleName(); 
-	G4double						lTime				 =  aTrack->GetLocalTime(); 
+	G4String parName = aTrack->GetParticleDefinition()->GetParticleName(); 
+	G4double gTime = aTrack->GetGlobalTime(); 
+	G4ThreeVector pos = aTrack->GetPosition();
+	G4double xx = pos.x();
+	G4double yy = pos.y();
+	G4double zz = pos.z();
+	G4double edep = aStep->GetTotalEnergyDeposit();
 
+	//G4cout << parName;
 	TrackHit* thisHit = new TrackHit();
 
 	//Information to be stored step by step
 	//*****************************************************************
 	thisHit->SetParName(parName);
-	thisHit->SetPreTotEn(preTotEn);
-	thisHit->SetTrackID(trackID);
-	thisHit->SetParentID(parentID);
-	thisHit->SetLocalTime(lTime);
+	thisHit->SetX(xx);
+	thisHit->SetY(yy);
+	thisHit->SetZ(zz);
+	thisHit->SetEdep(edep);
+	thisHit->SetGlobalTime(gTime);
 	//*****************************************************************
-
-	HitCollection->insert( thisHit );
-	
+	HitCollection->insert(thisHit);
 	return false;
 }
 

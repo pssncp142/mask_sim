@@ -11,7 +11,9 @@ TrackHit::TrackHit()
 
 TrackHit::TrackHit(const TrackHit& right) : G4VHit()
 {
-	
+	prePVName = right.prePVName;
+	parName = right.parName;
+	preTotEn = right.preTotEn;
 }
 
 TrackHit::~TrackHit()
@@ -21,7 +23,10 @@ TrackHit::~TrackHit()
 
 const TrackHit& TrackHit::operator=(const TrackHit& right)
 {
-  return *this;
+	preTotEn = right.preTotEn;
+	prePVName = right.prePVName;
+	parName = right.parName;
+	return *this;
 }
 
 G4int TrackHit::operator==(const TrackHit& right) const

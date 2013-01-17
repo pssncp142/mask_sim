@@ -13,6 +13,7 @@
 #include "G4SubtractionSolid.hh"
 #include "G4UnionSolid.hh"
 #include "G4Box.hh"
+#include "G4Tubes.hh"
 #include "G4Trd.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
@@ -37,12 +38,12 @@ DetectorConstruction::DetectorConstruction()
   detDistToMask = 34*mm;
   maskPixSize  = 1.2*mm;
   maskHeight = 2*mm;
-  maskOn = 0;
-	detectorOn = 0;
-	inclboxOn = 0;
-	AlBoxCoverOn = 1;
-	collimatorType = 0;
-	sourceHolderType = 0;
+  maskOn = 1;
+  detectorOn = 1;
+  inclboxOn = 1;
+  AlBoxCoverOn = 0;
+  collimatorType = 0;
+  sourceHolderType = 0;
   
   detMess = new DetectorMessenger(this); 
 }
@@ -122,37 +123,139 @@ void DetectorConstruction::ConstructAlBoxCover()
     // Is volume visible?
     AlBoxCover_log->SetVisAttributes(G4Color::Blue());
 		{G4cout << "- Aluminum Box Cover is build..." << G4endl;}
-
 }
 
 /**********************************************************************************************/
 
 void DetectorConstruction::ConstructCollimator(G4int type)
 {
-	switch (type)
-	{
-		case 0 :  
-			G4cout << "- No Collimator" << G4endl;		
-			break;
-		case 1 :
-			G4cout << "- Collimator Type 1 is build..." << G4endl;
-			break;
-	}	
+  switch (type)
+  {
+    case 0 :  
+    G4cout << "- No Collimator" << G4endl;		
+    break;
+    case 1 :
+    G4cout << "- Collimator Type 1 is build..." << G4endl;
+    break;  
+  }	
 }
 
 /**********************************************************************************************/
 
 void DetectorConstruction::ConstructSourceHolder(G4int type)
 {
-	switch (type)
-	{
-		case 0 :
-			G4cout << "- No Source Holder" << G4endl;  
-			break;
-		case 1 :
-			G4cout << "- Source Holder Type 1 is build..." << G4endl;
-			break;
-	}
+  switch (type)
+  {
+    case 0 :
+    G4cout << "- No Source Holder" << G4endl;
+    break;
+  
+    case 1 :
+    {
+      G4cout << "- Source Holder Type 1 is build..." << G4endl;
+      // ------------------------------------------------------ //
+      // Define dimensions.
+      G4double innerRadiusOfTheHolderCs137 = 0.2*cm;
+      G4double outerRadiusOfTheHolderCs137 = 10.5*cm/2.0;
+      G4double heightOfTheHolderCs137 = 8.4*cm/2.0;
+      G4double startAngleOfTheHolder = 0*deg;
+      G4double spanningAngleOfTheHolder = 360*deg;
+
+      // Inner cut.
+      G4double innerRadiusOfInnerCutCs137 = 0*cm;
+      G4double outerRadiusOfInnerCutCs137 = 6.8*cm/2.0;
+      G4double heightOfInnerCutCs137 = 7.3*cm/2.0;
+
+      // Outer cut.
+      G4double innerRadiusOfOuterCutCs137 = 8.0*cm/2.0;
+      G4double outerRadiusOfOuterCutCs137 = 10.6*cm/2.0;
+      G4double heightOfOuterCutCs137 = 7.3*cm/2.0;   
+      
+      // Define volumes.
+      G4Tubs* InnerCut = new G4Tubs("InnerCut",
+             innerRadiusOfInnerCutCs137,
+             outerRadiusOfInnerCutCs137,
+             heightOfInnerCutCs137,
+             startAngleOfTheHolder,
+             spanningAngleOfTheHolder);
+         
+      G4Tubs* OuterCut = new G4Tubs("OuterCut",
+             innerRadiusOfOuterCutCs137,
+             outerRadiusOfOuterCutCs137,
+             heightOfOuterCutCs137,
+             startAngleOfTheHolder,
+             spanningAngleOfTheHolder);
+
+      G4Tubs* MainPieceCs = new G4Tubs("MainPieceCs",
+             innerRadiusOfTheHolderCs137,
+             outerRadiusOfTheHolderCs137,
+             heightOfTheHolderCs137,
+             startAngleOfTheHolder,
+             spanningAngleOfTheHolder);      
+
+// ------------------------------------------------------ //
+      // Lead inside the source holder Cs 137.
+      // Define dimensions.
+      G4double innerRadiusOfTheLeadInside1 = 0.0*mm;
+      G4double outerRadiusOfTheLeadInside = 6.78*cm/2.0;
+      G4double heightOfTheLeadInside1 = 6.0*cm/2.0;
+         
+      G4double outerRadiusOfTheLeadInside2 = 0.4*cm/2.0;
+      G4double heightOfTheLeadInside2 = 2.5*cm/2.0;
+         
+      G4double outerRadiusOfTheLeadInside3 = 1.25*cm;
+      G4double heightOfTheLeadInside3 = 0.5*cm/2.0;
+         
+      // Define volumes.
+      G4Tubs* firstLeadInsideCs137 = new G4Tubs("firstLeadInsideCs137",
+             innerRadiusOfTheLeadInside1,
+             outerRadiusOfTheLeadInside,
+             heightOfTheLeadInside1,
+             startAngleOfTheHolder,
+             spanningAngleOfTheHolder);
+         
+      G4Tubs* secondLeadInsideCs137 = new G4Tubs("secondLeadInsideCs137",
+             innerRadiusOfTheLeadInside1,
+             outerRadiusOfTheLeadInside2,
+             heightOfTheLeadInside2,
+             startAngleOfTheHolder,
+             spanningAngleOfTheHolder);
+         
+      G4Tubs* thirdLeadInsideCs137 = new G4Tubs("thirdLeadInsideCs137",
+             innerRadiusOfTheLeadInside1,
+             outerRadiusOfTheLeadInside3,
+             heightOfTheLeadInside3,
+             startAngleOfTheHolder,
+             spanningAngleOfTheHolder);       
+             
+// ------------------------------------------------------ //
+      // Cap of the source holder for Cs 137.
+      // Define dimensions.
+      G4double innerRadiusOfTheSourceHolderCoverCs1371 = 6.8*cm/2.0;
+      G4double outerRadiusOfTheSourceHolderCoverCs1371 = 8.02*cm/2.0;
+      G4double heightOfTheSourceHolderCoverCs1371 = 2.5*cm/2.0;
+         
+      G4double innerRadiusOfTheSourceHolderCoverCs1372 = 0.0*mm;
+      G4double outerRadiusOfTheSourceHolderCoverCs1372 = 8.0*cm/2.0;
+      G4double heightOfTheSourceHolderCoverCs1372 = 3.8*cm/2.0;
+         
+      // Define volumes.
+      G4Tubs* firstSourceHolderCs137Sub = new G4Tubs("firstSourceHolderCs137Sub",
+             innerRadiusOfTheSourceHolderCoverCs1371,
+             outerRadiusOfTheSourceHolderCoverCs1371,
+             heightOfTheSourceHolderCoverCs1371,
+             startAngleOfTheHolder,
+             spanningAngleOfTheHolder);
+         
+      G4Tubs* firstSourceHolderCs137Cover = new G4Tubs("firstSourceHolderCs137Cover",
+             innerRadiusOfTheSourceHolderCoverCs1372,
+             outerRadiusOfTheSourceHolderCoverCs1372,
+             heightOfTheSourceHolderCoverCs1372,
+             startAngleOfTheHolder,
+             spanningAngleOfTheHolder);                   
+    }
+    break;
+  }
 }
 
 /**********************************************************************************************/
@@ -175,14 +278,17 @@ void DetectorConstruction::ConstructInclinedBox()
 
 void DetectorConstruction::ConstructDetector()
 {
-  G4VSolid* detect_sol = new G4Box("detect_sol",19.54*0.5*mm,19.54*0.5*mm,5.*0.5*mm);
+  G4double width = 19.54*mm;
+  G4double height = 5*mm;
+  G4double distover2 = 1.2-0.34*mm;
+  G4VSolid* detect_sol = new G4Box("detect_sol",width*0.5*mm,width*0.5*mm,height*0.5*mm);
   detect_log = new G4LogicalVolume(detect_sol,CdZnTe,"detect_log");
   detect_log->SetVisAttributes(G4Color::Yellow());  
   
-  detect_phys = new G4PVPlacement(0,G4ThreeVector((19.54*0.5+1.2-0.34),(19.54*0.5+1.2-0.34),-detDistToMask)*mm,detect_log,"detect_phys",World_log,false,0);
-  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(19.54*0.5+1.2-0.34),-(19.54*0.5+1.2-0.34),-detDistToMask)*mm,detect_log,"detect_phys",World_log,false,0);
-  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(19.54*0.5+1.2-0.34),(19.54*0.5+1.2-0.34),-detDistToMask)*mm,detect_log,"detect_phys",World_log,false,0);
-  detect_phys = new G4PVPlacement(0,G4ThreeVector((19.54*0.5+1.2-0.34),-(19.54*0.5+1.2-0.34),-detDistToMask)*mm,detect_log,"detect_phys",World_log,false,0);
+  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*mm)*mm,detect_log,"detect_phys",World_log,false,0);
+  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*mm)*mm,detect_log,"detect_phys",World_log,false,0);
+  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*mm)*mm,detect_log,"detect_phys",World_log,false,0);
+  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*mm)*mm,detect_log,"detect_phys",World_log,false,0);
 	
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
   sensDet = new SensitiveDetector("/SensDetector");

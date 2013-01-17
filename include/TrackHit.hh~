@@ -35,10 +35,6 @@ public :
   /*************************************************************************************/
   //SETS
   void SetParName(G4String val)	{parName=val;};
-  void SetX(G4double val) {xx=val;};
-  void SetY(G4double val) {yy=val;};
-  void SetZ(G4double val) {zz=val;};
-  void SetEdep(G4double val) {edep=val;};
   void SetGlobalTime(G4double val) {gTime=val;};
   /*************************************************************************************/	
 private :	

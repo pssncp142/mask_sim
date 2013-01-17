@@ -43,7 +43,7 @@ DetectorConstruction::DetectorConstruction()
   inclboxOn = 1;
   AlBoxCoverOn = 0;
   collimatorType = 0;
-  sourceHolderType = 0;
+  sourceHolderType = 1;
   
   detMess = new DetectorMessenger(this); 
 }
@@ -152,7 +152,10 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
   
     case 1 :
     {
-      G4cout << "- Source Holder Type 1 is build..." << G4endl;
+      G4double holderAlX = 0.0*mm;
+      G4double holderAlY = 0.0*mm; 
+      G4double holderAlZ = 0.0*mm;
+      
       // ------------------------------------------------------ //
       // Define dimensions.
       G4double innerRadiusOfTheHolderCs137 = 0.2*cm;
@@ -193,7 +196,27 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
              startAngleOfTheHolder,
              spanningAngleOfTheHolder);      
 
-// ------------------------------------------------------ //
+      G4ThreeVector zTransCs1(0,0,+(heightOfTheHolderCs137-heightOfInnerCutCs137));
+      G4SubtractionSolid*  firstSubtractAlVolume = new G4SubtractionSolid
+             ("firstSubtractAlVolume", MainPieceCs, InnerCut,0, zTransCs1);
+
+      // Subtract third lead from the remaining.
+      G4ThreeVector zTransCs2(0,0,+(heightOfTheHolderCs137-heightOfInnerCutCs137));
+      G4SubtractionSolid*  AlCs137Holder = new G4SubtractionSolid
+             ("AlCs137Holder", firstSubtractAlVolume, OuterCut,0, zTransCs2);
+
+      // Position of the Cs 137 holder.
+      G4ThreeVector AlCs137HolderPos = G4ThreeVector(holderAlX, holderAlY, holderAlZ);
+
+      // Define physical and logical volume.
+      G4LogicalVolume* AlCs137HolderLogic = new G4LogicalVolume(AlCs137Holder, Al, "AlCs137HolderLogic",0,0,0);        
+      AlCs137HolderPhys = new G4PVPlacement(0, AlCs137HolderPos, AlCs137HolderLogic,
+             "AlCs137HolderPhys", World_log, false, 0);
+         
+      // Is volume visible?
+      G4VisAttributes* visibleAlCs137Holder = new G4VisAttributes(G4Colour(248,248,248)); 
+      AlCs137HolderLogic->SetVisAttributes(visibleAlCs137Holder);
+      // ------------------------------------------------------ //
       // Lead inside the source holder Cs 137.
       // Define dimensions.
       G4double innerRadiusOfTheLeadInside1 = 0.0*mm;
@@ -254,6 +277,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
              startAngleOfTheHolder,
              spanningAngleOfTheHolder);                   
     }
+    G4cout << "- Source Holder Type 1 is build..." << G4endl;
     break;
   }
 }

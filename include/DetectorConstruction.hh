@@ -81,6 +81,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4VPhysicalVolume* detect_phys; 
 		G4VPhysicalVolume* inclbox_phys;
 		G4VPhysicalVolume* AlBoxCover_phys;
+		G4VPhysicalVolume* AlCs137HolderPhys;
 
 		G4VSolid* World_sol;						G4LogicalVolume* World_log;		
     G4VPhysicalVolume* World_phys;  

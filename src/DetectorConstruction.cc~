@@ -31,12 +31,10 @@
 
 /**********************************************************************************************/
 
-G4bool DetectorConstruction::binaryOutput=0;
-G4bool DetectorConstruction::textOutput=0;
+G4int DetectorConstruction::worldSize = 1*m;
 DetectorConstruction::DetectorConstruction()
 {
 	//global options to be used in geometry
-  worldSize = 1*m;
   detDistToMask = 34*mm;
   maskPixSize  = 1.2*mm;
   maskHeight = 2*mm;

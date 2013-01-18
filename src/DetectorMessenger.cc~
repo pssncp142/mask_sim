@@ -16,7 +16,7 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* myDet)
   detDir->SetGuidance("detector commands.");
   maskDir = new G4UIdirectory("/mask_sim/geom/mask/");
   maskDir->SetGuidance("mask commands.");
-  outputDir = new G4UIdirectory("/mask_sim/output/");
+  outputDir = new G4UIDirectory("/mask_sim/output/");
   outputDir->SetGuidance("output file commands");
 
   maskHeightCmd = new G4UIcmdWithADoubleAndUnit("/mask_sim/geom/mask/height",this);

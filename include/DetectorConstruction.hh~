@@ -21,9 +21,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   
     DetectorConstruction();
    ~DetectorConstruction();
-    static G4bool binaryOutput;
-    static G4bool textOutput;
-         
+    static G4int worldSize;    
+     
     G4VPhysicalVolume* Construct();                 
 		void SetMaskHeight(G4double);
 		void SetMaskPixSize(G4double);
@@ -56,8 +55,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void ConstructCollimator(G4int);
 		void ConstructSourceHolder(G4int);
 		void DefineMaterials();
-		
-		G4int worldSize;    
+
 		G4double detDistToMask;
 		G4double maskPixSize;
 		G4double maskHeight;   

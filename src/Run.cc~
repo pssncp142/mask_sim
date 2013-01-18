@@ -72,7 +72,7 @@ void Run::RecordEvent(const G4Event* aEvent)
     }
     
     //text data file...
-    if (DetectorConstruction::textOutput==1)
+    if (0==0)
     {
       std::ofstream ofs;
       ofs.open("output/data.txt",std::iostream::app);

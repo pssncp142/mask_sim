@@ -10,9 +10,9 @@ class Run : public G4Run
 	Run(const std::vector<G4String> SDName);
 	~Run();
 	void RecordEvent(const G4Event*);
-	
+	void SetBinary(G4bool val) {binaryOutput = val;};
 	private :
-	
+	G4bool binaryOutput;
 };
 
 #endif

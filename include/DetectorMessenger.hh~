@@ -10,7 +10,6 @@ class G4UIdirectory;
 class G4UIcmdWithAString;
 class G4UIcmdWithoutParameter;
 class G4UIcmdWithADoubleAndUnit;
-class G4UIcmdWithABool;
 
 class DetectorMessenger: public G4UImessenger
 {

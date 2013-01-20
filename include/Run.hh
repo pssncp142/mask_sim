@@ -3,6 +3,7 @@
 
 #include "G4Run.hh"
 #include "G4Event.hh"
+#include <ctime>
 
 class Run : public G4Run 
 {
@@ -12,6 +13,7 @@ class Run : public G4Run
 	void RecordEvent(const G4Event*);
 	
 	private :
+  time_t startT,lastT;
 	
 };
 

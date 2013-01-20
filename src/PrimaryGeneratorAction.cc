@@ -2,6 +2,8 @@
 **********************************************************************/
 
 #include "PrimaryGeneratorAction.hh"
+#include "DetectorConstruction.hh"
+
 #include "G4Event.hh"
 #include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
@@ -12,7 +14,9 @@
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
   //particleGun = new G4ParticleGun();
-  particleSource = new G4GeneralParticleSource();	
+  particleSource = new G4GeneralParticleSource();
+  G4SPSPosDistribution *posDist = particleSource->GetCurrentSource()->GetPosDist() ;
+  posDist->SetCentreCoords(DetectorConstruction::sourcePos);	
 }   
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -23,8 +27,7 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  //creates gun controls !!!!!!!!!!!!!!!!!!!
-  //particleGun->GeneratePrimaryVertex(anEvent);
+  //creates gun controls
+  //particleSource->SetParticlePosition(G4ThreeVector(0*mm,0*mm,200*mm));
   particleSource->GeneratePrimaryVertex(anEvent);
-
 }

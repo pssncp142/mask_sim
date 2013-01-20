@@ -79,8 +79,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int calls;
 		DetectorMessenger* detMess;
 
-		G4RotationMatrix* rotm;
-
   	G4Material* Air; G4Material* Pb;
   	G4Material* Al;  G4Element* Cd;
   	G4Element* Zn;  G4Element* Te;

@@ -21,7 +21,43 @@ Run::~Run()
 void Run::RecordEvent(const G4Event* aEvent)
 {
 
-  G4double time;	
+  numberOfEvent++;  // This is an original line.  
+  if (numberOfEvent <= 1) { startT = time(NULL); lastT = startT; }
+  
+  if (1)
+  {
+    G4long totEventNum = (G4long)GetNumberOfEventToBeProcessed();
+    G4double fperc = numberOfEvent * 100.0 / totEventNum;
+    G4int percent = (G4int)(fperc);
+    
+    if ( numberOfEvent == 1 || percent == fperc || time(NULL) - lastT >=1 )  
+    {
+      G4cout << "\rProgress: [";
+      
+      for (int i = 0; i < (percent+1)/2; i++)
+      {
+        G4cout << ":";
+      }
+      
+      for (int i = (percent+1)/2; i < 50; i++)
+      {
+        G4cout << " ";
+      }
+      G4cout << "]" << percent << "%";
+      
+      time_t elpsT = time(NULL) - startT;
+      time_t leftT = (G4double)elpsT / (G4double)numberOfEvent * (G4double)totEventNum;
+      
+      char buffer [100];
+      sprintf(buffer, "  ==> TE: %02d:%02d:%02d / TR: %02d:%02d:%02d   ", (G4int)elpsT/3600, ((G4int)elpsT%3600)/60, (G4int)elpsT%60, (G4int)leftT/3600, ((G4int)leftT%3600)/60, (G4int)leftT%60);
+      G4cout << buffer;
+      
+      lastT = time(NULL);
+    }
+    G4cout.flush();
+    if ( numberOfEvent == totEventNum ) G4cout << G4endl;
+  }
+  
   G4HCofThisEvent* HCE = aEvent->GetHCofThisEvent();
   if (!HCE) return;
   

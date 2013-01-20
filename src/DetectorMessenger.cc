@@ -4,6 +4,8 @@
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWith3Vector.hh"
+#include "G4UIcmdWith3VectorAndUnit.hh"
 
 DetectorMessenger::DetectorMessenger(DetectorConstruction* myDet)
 :detector(myDet)
@@ -16,8 +18,10 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* myDet)
   detDir->SetGuidance("detector commands.");
   maskDir = new G4UIdirectory("/mask_sim/geom/mask/");
   maskDir->SetGuidance("mask commands.");
-  outputDir = new G4UIdirectory("/mask_sim/output/");
-  outputDir->SetGuidance("output file commands");
+  sourceHolderDir = new G4UIdirectory("/mask_sim/geom/sourceHolder");
+  sourceHolderDir->SetGuidance("source holder commands.");
+  outputDir = new G4UIdirectory("/mask_sim/geom/output/");
+  outputDir->SetGuidance("output file commands.");
 
   maskHeightCmd = new G4UIcmdWithADoubleAndUnit("/mask_sim/geom/mask/height",this);
   maskHeightCmd->SetGuidance("Set the height of the mask.");
@@ -37,11 +41,27 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* myDet)
   detDistToMaskCmd->SetParameterName("choice",false);
   detDistToMaskCmd->AvailableForStates(G4State_PreInit);
   
+  sourceHolderPosCmd = new G4UIcmdWith3VectorAndUnit("/mask_sim/geom/sourceHolder/position",this);
+  sourceHolderPosCmd->SetGuidance("Position of the source holder (and probably for the source).");
+  sourceHolderPosCmd->SetUnitCategory("Length");
+  //sourceHolderPosCmd->SetParameterName("choice",false);
+  sourceHolderPosCmd->AvailableForStates(G4State_PreInit);
+  
+  sourceHolderRotCmd = new G4UIcmdWith3Vector("/mask_sim/geom/sourceHolder/rotation",this);
+  sourceHolderRotCmd->SetGuidance("Rotation of the source holder (and probably for the source).");
+  //sourceHolderRotCmd->SetParameterName("choice",false);
+  sourceHolderRotCmd->AvailableForStates(G4State_PreInit);
+  
   outputBinaryCmd = new G4UIcmdWithABool("/mask_sim/output/binary",this);
-  outputBinaryCmd->SetGuidance("Writes binary file for true");
+  outputBinaryCmd->SetGuidance("Writes binary output file for true");
   outputBinaryCmd->SetParameterName("choice",false);
   outputBinaryCmd->AvailableForStates(G4State_PreInit);
 
+  outputTextCmd = new G4UIcmdWithABool("/mask_sim/output/text",this);
+  outputTextCmd->SetGuidance("Writes text otuput file for true");
+  outputTextCmd->SetParameterName("choice",false);
+  outputTextCmd->AvailableForStates(G4State_PreInit);
+  
   updateCmd = new G4UIcmdWithoutParameter("/mask_sim/geom/update",this);
   updateCmd->SetGuidance("Updates geometry.");
   updateCmd->AvailableForStates(G4State_Idle);
@@ -69,8 +89,20 @@ void DetectorMessenger::SetNewValue(G4UIcommand* cmd, G4String val)
 	{
 		detector->SetDetDistToMask(detDistToMaskCmd->GetNewDoubleValue(val));		
 	}
+	else if (cmd == sourceHolderPosCmd)
+	{
+		detector->SetSourceHolderPos(sourceHolderPosCmd->GetNew3VectorValue(val));		
+	}
+	else if (cmd == sourceHolderRotCmd)
+	{
+		detector->SetSourceHolderRot(sourceHolderRotCmd->GetNew3VectorValue(val));		
+	}
 	else if (cmd == outputBinaryCmd)
 	{
 		detector->binaryOutput=(outputBinaryCmd->GetNewBoolValue(val));		
+	}
+	else if (cmd == outputTextCmd)
+	{
+		detector->textOutput=(outputTextCmd->GetNewBoolValue(val));		
 	}
 }

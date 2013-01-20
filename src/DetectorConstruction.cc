@@ -29,10 +29,17 @@
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
 
-/**********************************************************************************************/
+/**********************************************************************************************
+* I used DetectorMessenger file as general messenger so general values are defined here...
+**********************************************************************************************/
 
 G4bool DetectorConstruction::binaryOutput=0;
 G4bool DetectorConstruction::textOutput=0;
+G4ThreeVector DetectorConstruction::sourcePos=G4ThreeVector(0*mm,0*mm,100*mm);
+G4ThreeVector DetectorConstruction::sourceRot=G4ThreeVector(0,0,0);
+
+/**********************************************************************************************/
+
 DetectorConstruction::DetectorConstruction()
 {
 	//global options to be used in geometry
@@ -46,6 +53,8 @@ DetectorConstruction::DetectorConstruction()
   AlBoxCoverOn = 0;
   collimatorType = 0;
   sourceHolderType = 1;
+  sourceHolderPos = G4ThreeVector(0*mm,0*mm,100*mm);
+  sourceHolderRot = G4ThreeVector(0,0,0);
   
   detMess = new DetectorMessenger(this); 
 }
@@ -154,9 +163,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
   
     case 1 :
     {
-      G4double holderAlX = 0.0*mm;
-      G4double holderAlY = 0.0*mm; 
-      G4double holderAlZ = 0.0*mm;
+      G4double holderAlX = sourceHolderPos.getX();
+      G4double holderAlY = sourceHolderPos.getY(); 
+      G4double holderAlZ = sourceHolderPos.getZ();
       
       // ------------------------------------------------------ //
       // Define dimensions.
@@ -218,6 +227,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
       // Is volume visible?
       G4VisAttributes* visibleAlCs137Holder = new G4VisAttributes(G4Colour(248,248,248)); 
       AlCs137HolderLogic->SetVisAttributes(visibleAlCs137Holder);
+
       // ------------------------------------------------------ //
       // Lead inside the source holder Cs 137.
       // Define dimensions.
@@ -252,8 +262,29 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
              heightOfTheLeadInside3,
              startAngleOfTheHolder,
              spanningAngleOfTheHolder);       
-             
-// ------------------------------------------------------ //
+
+      // Subtract second lead from the first.
+      G4ThreeVector zTransLeadCs1371(0,0,-(heightOfTheLeadInside1-heightOfTheLeadInside2)-0.01*mm);
+      G4SubtractionSolid*  firstSubtractCs137Volume = new G4SubtractionSolid("firstSubtractCs137Volume", firstLeadInsideCs137, secondLeadInsideCs137,0, zTransLeadCs1371);
+         
+      // Subtract third lead from the remaining.
+      G4ThreeVector zTransLeadCs1372(0,0,-heightOfTheLeadInside3);
+      G4SubtractionSolid*  secondSubtractCs137Volume = new G4SubtractionSolid("secondSubtractCs137Volume", firstSubtractCs137Volume, thirdLeadInsideCs137,0, zTransLeadCs1372);
+         
+      // Position of the lead inside the source holder.
+      G4ThreeVector LeadInsideCs137Pos = G4ThreeVector(holderAlX, holderAlY, holderAlZ);
+         
+      // Define physical and logical volumes.
+      G4LogicalVolume* LeadInsideCs137Logic = new G4LogicalVolume(secondSubtractCs137Volume, Pb, "LeadInsideCs137Logic",0,0,0);
+      LeadInsideCs137Phys = new G4PVPlacement(0, LeadInsideCs137Pos, LeadInsideCs137Logic,
+           "LeadInsideCs137Phys", World_log, false, 0);
+         
+      // Is volume visible?
+      G4VisAttributes* visibleLeadInsideCs137 = new G4VisAttributes(G4Colour(1,0,0)); 
+      LeadInsideCs137Logic->SetVisAttributes(visibleLeadInsideCs137);
+      
+      // ------------------------------------------------------ //
+      // ------------------------------------------------------ //
       // Cap of the source holder for Cs 137.
       // Define dimensions.
       G4double innerRadiusOfTheSourceHolderCoverCs1371 = 6.8*cm/2.0;
@@ -277,7 +308,28 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
              outerRadiusOfTheSourceHolderCoverCs1372,
              heightOfTheSourceHolderCoverCs1372,
              startAngleOfTheHolder,
-             spanningAngleOfTheHolder);                   
+             spanningAngleOfTheHolder);
+      
+      // This is the shift needed to subtract correct part of the volume.        
+      G4ThreeVector zTransCoverCs137(0,0,+heightOfTheSourceHolderCoverCs1371-heightOfTheSourceHolderCoverCs1372-0.01*mm);
+      // This is the subtracted volume to be used ad a cap for the source holder.
+      G4SubtractionSolid* sourceHolderCoverCs137 = new G4SubtractionSolid("sourceHolderCoverCs137", firstSourceHolderCs137Cover,
+           firstSourceHolderCs137Sub, 0, zTransCoverCs137);
+      
+      // Position of the cap.
+      G4ThreeVector sourceHolderCoverCs137Pos = G4ThreeVector(holderAlX, holderAlY,
+           holderAlZ+heightOfTheLeadInside1+heightOfTheSourceHolderCoverCs1372+heightOfTheLeadInside3/2.0);         
+        
+      // Define physical and logical volume.
+      G4LogicalVolume* sourceHolderCoverCs137Logic = new G4LogicalVolume(sourceHolderCoverCs137, Al, "sourceHolderCoverCs137",0,0,0); 
+      sourceHolderCoverCs137Phys = new G4PVPlacement(0, sourceHolderCoverCs137Pos, sourceHolderCoverCs137Logic,
+           "sourceHolderCoverCs137Phys", World_log, false, 0);
+       
+      // Is volume visible?
+      G4VisAttributes* sourceHolderCoverCs137Volume = new G4VisAttributes(G4Colour(248,248,248)); 
+      sourceHolderCoverCs137Logic->SetVisAttributes(sourceHolderCoverCs137Volume);
+      // SetVisAttributes(G4VisAttributes::Invisible);//
+      // ------------------------------------------------------ //                          
     }
     G4cout << "- Source Holder Type 1 is build..." << G4endl;
     break;
@@ -398,7 +450,7 @@ void DetectorConstruction::DefineMaterials()
 #undef GET_MATERIAL
 }
 
-/**********************************************************************************************/
+/*********************************************************************************************/
 
 void DetectorConstruction::SetDetDistToMask(G4double val){detDistToMask = val;}
 void DetectorConstruction::SetMaskPixSize(G4double val){maskPixSize = val;}
@@ -409,6 +461,8 @@ void DetectorConstruction::SetInclboxOn(G4bool val){inclboxOn = val;}
 void DetectorConstruction::SetAlBoxCoverOn(G4bool val){AlBoxCoverOn = val;}
 void DetectorConstruction::SetCollimatorType(G4int val){collimatorType = val;}
 void DetectorConstruction::SetSourceHolderType(G4int val){sourceHolderType = val;}
+void DetectorConstruction::SetSourceHolderPos(G4ThreeVector val){sourceHolderPos = val;sourcePos = val;}
+void DetectorConstruction::SetSourceHolderRot(G4ThreeVector val){sourceHolderRot = val;sourceRot = val;}
 
 /**********************************************************************************************/
 

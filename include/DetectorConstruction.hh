@@ -23,7 +23,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
    ~DetectorConstruction();
     static G4bool binaryOutput;
     static G4bool textOutput;
-         
+    static G4ThreeVector sourcePos;         
+    static G4ThreeVector sourceRot;
+    
     G4VPhysicalVolume* Construct();                 
 		void SetMaskHeight(G4double);
 		void SetMaskPixSize(G4double);
@@ -34,6 +36,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void SetAlBoxCoverOn(G4bool);
 		void SetCollimatorType(G4int);
 		void SetSourceHolderType(G4int);
+		void SetSourceHolderPos(G4ThreeVector);
+		void SetSourceHolderRot(G4ThreeVector);
 		void UpdateGeometry();
 
 		G4double GetWorldSize() {return worldSize;}; 
@@ -46,6 +50,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4bool GetAlBoxCoverOn() {return AlBoxCoverOn;};
 		G4int GetCollimatorType() {return collimatorType;};
 		G4int GetSourceHolderType() {return sourceHolderType;};
+		G4ThreeVector GetSourceHolderPos() {return sourceHolderPos;};
+		G4ThreeVector GetSourceHolderRot() {return sourceHolderRot;};
 
   private:
   
@@ -57,17 +63,18 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void ConstructSourceHolder(G4int);
 		void DefineMaterials();
 		
-		G4int worldSize;    
+		G4double worldSize;    
 		G4double detDistToMask;
 		G4double maskPixSize;
 		G4double maskHeight;   
-    		//G4double worldSize;
 		G4bool maskOn;
 		G4bool detectorOn;
 		G4bool inclboxOn;
 		G4bool AlBoxCoverOn;
 		G4int collimatorType;
 		G4int sourceHolderType;
+		G4ThreeVector sourceHolderPos;
+		G4ThreeVector sourceHolderRot;
 		
 		G4int calls;
 		DetectorMessenger* detMess;
@@ -86,7 +93,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4VPhysicalVolume* inclbox_phys;
 		G4VPhysicalVolume* AlBoxCover_phys;
 		G4VPhysicalVolume* AlCs137HolderPhys;
-
+    G4VPhysicalVolume* LeadInsideCs137Phys;
+    G4VPhysicalVolume* sourceHolderCoverCs137Phys;
+    
 		G4VSolid* World_sol;						G4LogicalVolume* World_log;		
     G4VPhysicalVolume* World_phys;  
 

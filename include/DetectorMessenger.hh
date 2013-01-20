@@ -11,6 +11,8 @@ class G4UIcmdWithAString;
 class G4UIcmdWithoutParameter;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithABool;
+class G4UIcmdWith3Vector;
+class G4UIcmdWith3VectorAndUnit;
 
 class DetectorMessenger: public G4UImessenger
 {
@@ -29,10 +31,13 @@ class DetectorMessenger: public G4UImessenger
     G4UIdirectory* geoDir;
     G4UIdirectory* detDir;
     G4UIdirectory* maskDir;
+    G4UIdirectory* sourceHolderDir;
 
     G4UIcmdWithADoubleAndUnit* maskPixSizeCmd;
     G4UIcmdWithADoubleAndUnit* maskHeightCmd;
     G4UIcmdWithADoubleAndUnit* detDistToMaskCmd;
+    G4UIcmdWith3VectorAndUnit* sourceHolderPosCmd;
+    G4UIcmdWith3Vector* sourceHolderRotCmd;
     G4UIcmdWithoutParameter* updateCmd;    
 
     G4UIdirectory* outputDir;

@@ -410,10 +410,11 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          G4double heightOfTheHolderSecond = 3.0005*cm/2.0;
          
          G4ThreeVector refFrame = G4ThreeVector(0,0,heightOfTheHolderFirst);
+         refFrame.rotateZ(-sourceHolderRot.getZ()*degree);      
+         refFrame.rotateY(-sourceHolderRot.getY()*degree);
          refFrame.rotateX(-sourceHolderRot.getX()*degree);
-         refFrame.rotateY(sourceHolderRot.getY()*degree);
-         refFrame.rotateZ(sourceHolderRot.getZ()*degree);      
-
+         
+         
          /*// ShiftHolder. Needed below!.
          // 1.5*cm is the thickness of the collimator for Am, Co and Cd.
          // Shift depends on the existence of collimator.
@@ -505,10 +506,10 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          
          // Position of the holder.
          G4ThreeVector refFrame1 = G4ThreeVector(0,0,heightOfTheLeadInside3);         
+         refFrame1.rotateZ(-sourceHolderRot.getZ()*degree);      
+         refFrame1.rotateY(-sourceHolderRot.getY()*degree); 
          refFrame1.rotateX(-sourceHolderRot.getX()*degree);
-         refFrame1.rotateY(-sourceHolderRot.getY()*degree);
-         refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
-
+         
          G4ThreeVector firstSubtractPos = sourceHolderPos + refFrame + refFrame1;
          
          // Definition of logical and physical volume.

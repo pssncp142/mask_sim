@@ -1,6 +1,14 @@
+/**************************************************************************
+* Yigit Dallilar
+* Date    : 21.01.2013
+* Project : Sabanci University coded mask simulation...
+* File    : src/Run.cc
+* - Geant4 starts RecordEvent for every event so it is possible to 
+* write output files
+**************************************************************************/
+
 #include "Run.hh"
 #include "TrackHit.hh"
-//#include "DetectorConstruction.hh"
 #include "Messenger.hh"
 
 #include "G4Run.hh"
@@ -18,7 +26,6 @@ Run::Run(const std::vector<G4String> SDName) : G4Run()
 
 Run::~Run()
 {
-
 }
 
 void Run::RecordEvent(const G4Event* aEvent)
@@ -66,10 +73,9 @@ void Run::RecordEvent(const G4Event* aEvent)
   
   G4SDManager* fSDM = G4SDManager::GetSDMpointer();
   G4int collectionID = fSDM->GetCollectionID("HitCollection");
-	 
-  TrackHitCollection* HC = (TrackHitCollection*)(HCE->GetHC(collectionID));
-  
+  TrackHitCollection* HC = (TrackHitCollection*)(HCE->GetHC(collectionID));  
   G4int NbHits = HC->entries()-1;
+  
   //variables to hold data
   string* parName = new string[NbHits];
   double* edep = new double[NbHits]; 
@@ -128,3 +134,5 @@ void Run::RecordEvent(const G4Event* aEvent)
     }
   } 
 }
+
+/*************************************************************************/

@@ -1,7 +1,15 @@
 /**************************************************************************
-* DetectorConstruction.hh (Yigit Dallilar)
-*
+* Author  : Yigit Dallilar
+* Date    : 21.01.2013
+* Project : Sabanci University coded mask simulation
+* File    : include/DetectorConstruction.hh
+* - header file for src/DetectorConstruction 
 ***************************************************************************/
+
+/**************************************************************************
+  NOTES :
+  (1) It is better to define some variables global as like materials.
+**************************************************************************/
 
 #ifndef DetectorConstruction_h
 #define DetectorConstruction_h 1
@@ -14,6 +22,7 @@
 class SensitiveDetector;
 class G4Element;
 
+/*************************************************************************/
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -28,32 +37,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     static G4ThreeVector posToRef;
     
     G4VPhysicalVolume* Construct();                 
-		void SetMaskHeight(G4double);
-		void SetMaskPixSize(G4double);
-		void SetDetDistToMask(G4double);
-		void SetMaskOn(G4bool);
-		void SetDetectorOn(G4bool);
-		void SetInclboxOn(G4bool);
-		void SetAlBoxCoverOn(G4bool);
-		void SetCollimatorType(G4int);
-		void SetSourceHolderType(G4int);
-		void SetSourceHolderPos(G4ThreeVector);
-		void SetSourceHolderRot(G4ThreeVector);
-		void UpdateGeometry();
-
-		G4double GetWorldSize() {return worldSize;}; 
-		G4double GetmaskHeight() {return maskHeight;}; 
-		G4double GetmaskPixSize() {return maskPixSize;}; 
-		G4double GetdetDistToMask() {return detDistToMask;}; 
-		G4bool GetMaskOn() {return maskOn;};
-		G4bool GetDetectorOn() {return detectorOn;};
-		G4bool GetInclboxOn() {return inclboxOn;};
-		G4bool GetAlBoxCoverOn() {return AlBoxCoverOn;};
-		G4int GetCollimatorType() {return collimatorType;};
-		G4int GetSourceHolderType() {return sourceHolderType;};
-		G4ThreeVector GetSourceHolderPos() {return sourceHolderPos;};
-		G4ThreeVector GetSourceHolderRot() {return sourceHolderRot;};
-
+		
   private:
   
 		void ConstructAlBoxCover();
@@ -77,9 +61,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4ThreeVector sourceHolderPos;
 		G4ThreeVector sourceHolderRot;
 		
-		G4int calls;
-		//DetectorMessenger* detMess;
-
   	G4Material* Air; G4Material* Pb;
   	G4Material* Al;  G4Element* Cd;
   	G4Element* Zn;  G4Element* Te;
@@ -103,3 +84,4 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 #endif
 
+/********************************************************************************/

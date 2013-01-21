@@ -1,8 +1,17 @@
 /**********************************************************************************
-* DetectorConstruction.cc (Yigit Dallilar)
-* 
-* Geometry of the simluation is defined here...
+* Author  : Yigit Dallilar
+* Date    : 21.01.2013
+* Project : Sabanci University coded mask simulation
+* File    : src/DetectorConstruction.cc
+*  - Geometry of the simluation is defined here...
 * 		
+***********************************************************************************/
+
+/**********************************************************************************
+  Notes :
+  (1) Find a solution for rotation of the volumes.
+  (2) Collimator definitions should be added.
+  (3) Maybe it should be useful to import some static values.
 ***********************************************************************************/
 
 #include "Messenger.hh"
@@ -20,18 +29,12 @@
 #include "G4VisAttributes.hh"
 #include "G4Color.hh"
 #include "G4RotationMatrix.hh"
-
 #include "G4GeometryManager.hh"
 #include "G4PhysicalVolumeStore.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
-
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
-
-/**********************************************************************************************
-* I used DetectorMessenger file as general messenger so general values are defined here...
-**********************************************************************************************/
 
 /**********************************************************************************************/
 
@@ -50,33 +53,28 @@ DetectorConstruction::DetectorConstruction()
   sourceHolderType = Messenger::sourceHolderType;
   sourceHolderPos = Messenger::sourceHolderPos;
   sourceHolderRot = Messenger::sourceHolderRot;
-  
-  //detMess = new DetectorMessenger(this); 
 }
 
 /**********************************************************************************************/
 
 DetectorConstruction::~DetectorConstruction()
 {
-  //delete detMess;
 }
 
 /**********************************************************************************************/
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
-  G4GeometryManager::GetInstance()->OpenGeometry();
-  G4PhysicalVolumeStore::GetInstance()->Clean();
-  G4LogicalVolumeStore::GetInstance()->Clean();
-  G4SolidStore::GetInstance()->Clean();
-  
+  // Function that defines materials...
   DefineMaterials();
   
+  // Defining world wolume...
   World_sol = new G4Box("World",worldSize/2,worldSize/2,worldSize/2);		   
   World_log = new G4LogicalVolume(World_sol,Air,"World");		
   World_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),World_log,"World",0,false,0);  
   World_log->SetVisAttributes(G4VisAttributes::Invisible);
   
+  // Geometry is building...
 	G4cout <<  "******************* GEOMETRY OPTIONS ************************" << G4endl << G4endl;
 	ConstructCollimator(collimatorType);
 	ConstructSourceHolder(sourceHolderType);
@@ -88,51 +86,43 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	{G4cout << "- No Detector" << G4endl;}
   if (maskOn == 1) {ConstructMask();} else 
 	{G4cout << "- No Coded Mask" << G4endl;}
-
 	G4cout << G4endl << "**************** GEOMETRY IS INITIALISED ********************" << G4endl << G4endl;
     
   return World_phys;
 } 
 
 /**********************************************************************************************/
-
+// Constructs Aliminum Cover...
 void DetectorConstruction::ConstructAlBoxCover()
 {
 //!!! Just little bit changes over the old simulation...
-
-	  // Al box cover dimension.
     G4double AlBox1_x = 9.0*cm/2.0;
     G4double AlBox1_y = 11.5*cm/2.0;
     G4double AlBox1_z = 3.0*mm/2.0;
     
-    // Cut out piece.
     G4double AlBox2_x = 3.5*cm/2.0;
     G4double AlBox2_y = 4.0*cm/2.0;
     G4double AlBox2_z = 3.01*mm/2.0;
     
-    // Al box cover and cut out piece definition.
     G4VSolid* AlBoxCover1_sol = new G4Box("AlBoxCover1_sol",AlBox1_x,AlBox1_y,AlBox1_z);
     G4VSolid* AlBoxCover2_sol = new G4Box("AlBoxCover2_sol",AlBox2_x,AlBox2_y,AlBox2_z);
     
-    // Cut out piece 0.6cm inside. 
     G4ThreeVector zTrans(0,AlBox2_y-AlBox1_y+0.6*cm,0);
 
     G4SubtractionSolid*  AlBoxCover_sol = new G4SubtractionSolid("AlBoxCover_sol", AlBoxCover1_sol, AlBoxCover2_sol, 0, zTrans);
  
-    // Position of Al box cover.
     G4ThreeVector AlBoxCoverPos = G4ThreeVector(0,3.1*cm,300*mm);
     
-    // Definition of logical and physical volume.
     G4LogicalVolume* AlBoxCover_log = new G4LogicalVolume(AlBoxCover_sol, Al,"AlBoxCover_log",0,0,0);
     AlBoxCover_phys = new G4PVPlacement(0, AlBoxCoverPos,AlBoxCover_log,"AlBoxCover_phys",World_log,false,0);
     
-    // Is volume visible?
     AlBoxCover_log->SetVisAttributes(G4Color::Blue());
 		{G4cout << "- Aluminum Box Cover is build..." << G4endl;}
 }
 
 /**********************************************************************************************/
-
+// Constructs Collimators... 
+// New collimators can be added...
 void DetectorConstruction::ConstructCollimator(G4int type)
 {
   switch (type)
@@ -145,11 +135,12 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     break;  
   }	
 }
-
 /**********************************************************************************************/
-
+// Constructs Source Holders...
+// Way to do here...
 void DetectorConstruction::ConstructSourceHolder(G4int type)
 {
+  // Is it a best way to do !!!!!!!!!!!!!!!!!!!!!
   G4RotationMatrix* rotm = new G4RotationMatrix();
   rotm->rotateX(sourceHolderRot.getX()*degree);
   rotm->rotateY(sourceHolderRot.getY()*degree);
@@ -578,7 +569,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
 }
 
 /**********************************************************************************************/
-
+// Constructs Inclined box ...(holder for the mask)
 void DetectorConstruction::ConstructInclinedBox()
 {
 	G4double wallThick = 3*mm;
@@ -594,7 +585,7 @@ void DetectorConstruction::ConstructInclinedBox()
 }
 
 /**********************************************************************************************/
-
+// Constructs detectors ...
 void DetectorConstruction::ConstructDetector()
 {
   G4double width = 19.54*mm;
@@ -618,7 +609,7 @@ void DetectorConstruction::ConstructDetector()
 }
 
 /**********************************************************************************************/
-
+// Constructs mask ...
 void DetectorConstruction::ConstructMask()
 {
   G4VSolid* pixel_sol = new G4Box("pixel_sol",maskPixSize*0.5*mm,maskPixSize*0.5*mm,maskHeight*0.5*mm);
@@ -671,7 +662,7 @@ void DetectorConstruction::ConstructMask()
 }
 
 /**********************************************************************************************/
-
+// Defines materials...
 void DetectorConstruction::DefineMaterials()
 {
   G4String symbol;
@@ -689,29 +680,6 @@ void DetectorConstruction::DefineMaterials()
   CdZnTe->AddElement(Zn,natoms=1);
   CdZnTe->AddElement(Te,natoms=10);
 #undef GET_MATERIAL
-}
-
-/*********************************************************************************************/
-/*
-void DetectorConstruction::SetDetDistToMask(G4double val){detDistToMask = val;}
-void DetectorConstruction::SetMaskPixSize(G4double val){maskPixSize = val;}
-void DetectorConstruction::SetMaskHeight(G4double val){maskHeight = val;}
-void DetectorConstruction::SetMaskOn(G4bool val){maskOn = val;}
-void DetectorConstruction::SetDetectorOn(G4bool val){detectorOn = val;}
-void DetectorConstruction::SetInclboxOn(G4bool val){inclboxOn = val;}
-void DetectorConstruction::SetAlBoxCoverOn(G4bool val){AlBoxCoverOn = val;}
-void DetectorConstruction::SetCollimatorType(G4int val){collimatorType = val;}
-void DetectorConstruction::SetSourceHolderType(G4int val){sourceHolderType = val;}
-void DetectorConstruction::SetSourceHolderPos(G4ThreeVector val){sourceHolderPos = val; sourcePos = val;}
-void DetectorConstruction::SetSourceHolderRot(G4ThreeVector val){sourceHolderRot = val; sourceRot = val;}
-*/
-/**********************************************************************************************/
-
-#include "G4RunManager.hh"
-
-void DetectorConstruction::UpdateGeometry()
-{
-  G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
 }
 
 /**********************************************************************************************/

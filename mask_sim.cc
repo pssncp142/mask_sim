@@ -1,8 +1,17 @@
 /*****************************************************************************
-Yigit Dallilar
-08.11.2012
-mask_sim.cc
-main file for the simulation
+*Author  : Yigit Dallilar
+*Date    : 21.01.2013
+*Project : Sabanci University coded mask simulation
+*Name    : mask_sim.cc
+* - main file for the simulation
+******************************************************************************/
+
+/*****************************************************************************
+  Notes : 
+  (1) General messenger added and G4UImanager starts immediately.
+
+  To Do :
+  (1) New Random Engine
 ******************************************************************************/
 
 #include "G4RunManager.hh"
@@ -14,7 +23,6 @@ main file for the simulation
 #include "PhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
-#include "G4EmStandardPhysics_option3.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
@@ -24,35 +32,29 @@ main file for the simulation
 #include "G4UIExecutive.hh"
 #endif
 
+/*******************************************************************************/
+
 int main(int argc,char** argv) {
-  
+
+  // (1)  
   Messenger* msgr = new Messenger();
-    // get the pointer to the User Interface manager 
   G4UImanager* UI = G4UImanager::GetUIpointer();  
+  // mask_sim directory options are written over Messenger.cc which is general messenger for the simulation...
+  // and use settings.mac to control this options...
   UI->ApplyCommand("/control/execute settings.mac");
 
-  //choose the Random engine
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
   
-  // Construct the default run manager
   G4RunManager * runManager = new G4RunManager;
-
-  // set mandatory initialization classes & user action classes
   DetectorConstruction* detCon = new DetectorConstruction();
   PhysicsList* physList = new PhysicsList();
   runManager->SetUserInitialization(detCon);
-  runManager->SetUserInitialization(physList);
-	//runManager->SetUserInitialization(new G4EmStandardPhysics_option3());
-  
+  runManager->SetUserInitialization(physList);  
   PrimaryGeneratorAction* prim  = new PrimaryGeneratorAction();        
   runManager->SetUserAction(prim);
-
 	RunAction* runAct = new RunAction();
 	runManager->SetUserAction(runAct);
     
-  //Initialize G4 kernel
-  //runManager->Initialize();
-
   if (argc!=1)   // batch mode  
     { 
      G4String command = "/control/execute ";
@@ -79,8 +81,6 @@ int main(int argc,char** argv) {
 #endif     
     }
 
-  // job termination
-  //
   delete runManager;
 
   return 0;

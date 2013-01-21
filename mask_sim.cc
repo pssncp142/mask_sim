@@ -38,6 +38,10 @@ int main(int argc,char** argv) {
   runManager->SetUserInitialization(physList);
 	//runManager->SetUserInitialization(new G4EmStandardPhysics_option3());
 
+  // get the pointer to the User Interface manager 
+  G4UImanager* UI = G4UImanager::GetUIpointer();  
+  UI->ApplyCommand("/control/execute settings.mac");
+  
   PrimaryGeneratorAction* prim  = new PrimaryGeneratorAction();        
   runManager->SetUserAction(prim);
 
@@ -46,9 +50,6 @@ int main(int argc,char** argv) {
     
   //Initialize G4 kernel
   //runManager->Initialize();
-    
-  // get the pointer to the User Interface manager 
-  G4UImanager* UI = G4UImanager::GetUIpointer();  
 
   if (argc!=1)   // batch mode  
     { 

@@ -9,6 +9,7 @@ main file for the simulation
 #include "G4UImanager.hh"
 #include "Randomize.hh"
 
+#include "Messenger.hh"
 #include "DetectorConstruction.hh"
 #include "PhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
@@ -24,7 +25,12 @@ main file for the simulation
 #endif
 
 int main(int argc,char** argv) {
- 
+  
+  Messenger* msgr = new Messenger();
+    // get the pointer to the User Interface manager 
+  G4UImanager* UI = G4UImanager::GetUIpointer();  
+  UI->ApplyCommand("/control/execute settings.mac");
+
   //choose the Random engine
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
   
@@ -37,10 +43,6 @@ int main(int argc,char** argv) {
   runManager->SetUserInitialization(detCon);
   runManager->SetUserInitialization(physList);
 	//runManager->SetUserInitialization(new G4EmStandardPhysics_option3());
-
-  // get the pointer to the User Interface manager 
-  G4UImanager* UI = G4UImanager::GetUIpointer();  
-  UI->ApplyCommand("/control/execute settings.mac");
   
   PrimaryGeneratorAction* prim  = new PrimaryGeneratorAction();        
   runManager->SetUserAction(prim);

@@ -32,6 +32,7 @@ public :
   G4double GetZ() {return zz;}
   G4double GetEdep() {return edep;}
   G4double GetGlobalTime() {return gTime;};
+  G4double GetTotalEnergy() {return ener;}
   /*************************************************************************************/
   //SETS
   void SetParName(G4String val)	{parName=val;};
@@ -40,6 +41,7 @@ public :
   void SetZ(G4double val) {zz=val;};
   void SetEdep(G4double val) {edep=val;};
   void SetGlobalTime(G4double val) {gTime=val;};
+  void SetTotalEnergy(G4double val) {ener=val;};
   /*************************************************************************************/	
 private :	
   /*************************************************************************************/
@@ -50,6 +52,7 @@ private :
   G4double zz;
   G4double edep; 
   G4double gTime;			
+  G4double ener;
   /*************************************************************************************/
 
 };

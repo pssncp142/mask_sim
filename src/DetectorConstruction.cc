@@ -5,7 +5,7 @@
 * 		
 ***********************************************************************************/
 
-#include "DetectorMessenger.hh"
+#include "Messenger.hh"
 #include "DetectorConstruction.hh"
 #include "SensitiveDetector.hh"
 
@@ -33,37 +33,32 @@
 * I used DetectorMessenger file as general messenger so general values are defined here...
 **********************************************************************************************/
 
-G4bool DetectorConstruction::binaryOutput=0;
-G4bool DetectorConstruction::textOutput=0;
-G4ThreeVector DetectorConstruction::sourcePos=G4ThreeVector(0*mm,0*mm,100*mm);
-G4ThreeVector DetectorConstruction::sourceRot=G4ThreeVector(0,0,0);
-
 /**********************************************************************************************/
 
 DetectorConstruction::DetectorConstruction()
 {
 	//global options to be used in geometry
   worldSize = 1*m;
-  detDistToMask = 34*mm;
-  maskPixSize  = 1.2*mm;
-  maskHeight = 2*mm;
-  maskOn = 1;
-  detectorOn = 1;
-  inclboxOn = 1;
-  AlBoxCoverOn = 0;
-  collimatorType = 0;
-  sourceHolderType = 1;
-  sourceHolderPos = G4ThreeVector(0*mm,0*mm,100*mm);
-  sourceHolderRot = G4ThreeVector(0,0,0);
+  detDistToMask = Messenger::detDistToMask;
+  maskPixSize  = Messenger::maskPixSize;
+  maskHeight = Messenger::maskHeight;
+  maskOn = Messenger::maskOn;
+  detectorOn = Messenger::detectorOn;
+  inclboxOn = Messenger::inclboxOn;
+  AlBoxCoverOn = Messenger::AlBoxCoverOn;
+  collimatorType = Messenger::collimatorType;
+  sourceHolderType = Messenger::sourceHolderType;
+  sourceHolderPos = Messenger::sourceHolderPos;
+  sourceHolderRot = Messenger::sourceHolderRot;
   
-  detMess = new DetectorMessenger(this); 
+  //detMess = new DetectorMessenger(this); 
 }
 
 /**********************************************************************************************/
 
 DetectorConstruction::~DetectorConstruction()
 {
-  delete detMess;
+  //delete detMess;
 }
 
 /**********************************************************************************************/
@@ -159,7 +154,8 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
   rotm->rotateX(sourceHolderRot.getX()*degree);
   rotm->rotateY(sourceHolderRot.getY()*degree);
   rotm->rotateZ(sourceHolderRot.getZ()*degree);      
-
+  G4ThreeVector unit_vector = (rotm->getAxis()).unit();
+  
   switch (type)
   {  
     case 0 :
@@ -186,12 +182,12 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
       G4double outerRadiusOfOuterCutCs137 = 10.6*cm/2.0;
       G4double heightOfOuterCutCs137 = 7.3*cm/2.0;
 
-      G4ThreeVector refFrame1 = G4ThreeVector(0,0,heightOfTheHolderCs137);
+      G4ThreeVector refFrame1 = G4ThreeVector(0,0,heightOfTheHolderCs137);//*unit_vector;
+      //G4ThreeVector refFrame1 = heightOfTheHolderCs137*unit_vector;
       refFrame1.rotateX(-sourceHolderRot.getX()*degree);
-      refFrame1.rotateY(sourceHolderRot.getY()*degree);
+      refFrame1.rotateY(-sourceHolderRot.getY()*degree);
       refFrame1.rotateZ(sourceHolderRot.getZ()*degree);
-      
-       
+             
       /*// ShiftHolder. Needed below!.
       // 1.5*cm is the thickness of the collimator for Am, Co and Cd.
       // Shift depends on the existence of collimator.
@@ -375,10 +371,11 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
       
          // Position of the cap.
          G4ThreeVector refFrame2 = G4ThreeVector(0,0,heightOfTheLeadInside1+heightOfTheSourceHolderCoverCs1372+heightOfTheLeadInside3/2.0);
+         //G4ThreeVector refFrame2 = unit_vector*(heightOfTheLeadInside1+heightOfTheSourceHolderCoverCs1372+heightOfTheLeadInside3/2.0);
          refFrame2.rotateX(-sourceHolderRot.getX()*degree);
-         refFrame2.rotateY(sourceHolderRot.getY()*degree);
+         refFrame2.rotateY(-sourceHolderRot.getY()*degree);
          refFrame2.rotateZ(sourceHolderRot.getZ()*degree);
-         
+ 
          G4ThreeVector sourceHolderCoverCs137Pos = sourceHolderPos + refFrame1 + refFrame2;
         
          // Define physical and logical volume.
@@ -695,7 +692,7 @@ void DetectorConstruction::DefineMaterials()
 }
 
 /*********************************************************************************************/
-
+/*
 void DetectorConstruction::SetDetDistToMask(G4double val){detDistToMask = val;}
 void DetectorConstruction::SetMaskPixSize(G4double val){maskPixSize = val;}
 void DetectorConstruction::SetMaskHeight(G4double val){maskHeight = val;}
@@ -707,7 +704,7 @@ void DetectorConstruction::SetCollimatorType(G4int val){collimatorType = val;}
 void DetectorConstruction::SetSourceHolderType(G4int val){sourceHolderType = val;}
 void DetectorConstruction::SetSourceHolderPos(G4ThreeVector val){sourceHolderPos = val; sourcePos = val;}
 void DetectorConstruction::SetSourceHolderRot(G4ThreeVector val){sourceHolderRot = val; sourceRot = val;}
-
+*/
 /**********************************************************************************************/
 
 #include "G4RunManager.hh"

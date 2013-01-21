@@ -1,5 +1,4 @@
-#include "DetectorMessenger.hh"
-#include "DetectorConstruction.hh"
+#include "Messenger.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
@@ -8,9 +7,24 @@
 #include "G4UIcmdWith3Vector.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
-DetectorMessenger::DetectorMessenger(DetectorConstruction* myDet)
-:detector(myDet)
-{ 
+#include "globals.hh"
+
+G4bool Messenger::binaryOutput = 0;
+G4bool Messenger::textOutput = 0;
+G4double Messenger::detDistToMask = 34*mm;
+G4double Messenger::maskPixSize  = 1.2*mm;
+G4double Messenger::maskHeight = 2*mm;
+G4bool Messenger::maskOn = 1;
+G4bool Messenger::detectorOn = 1;
+G4bool Messenger::inclboxOn = 1;
+G4bool Messenger::AlBoxCoverOn = 0;
+G4int Messenger::collimatorType = 0;
+G4int Messenger::sourceHolderType = 1;
+G4ThreeVector Messenger::sourceHolderPos = G4ThreeVector(0*mm,0*mm,0*mm);
+G4ThreeVector Messenger::sourceHolderRot = G4ThreeVector(0,0,0);
+
+Messenger::Messenger()
+{
   dir = new G4UIdirectory("/mask_sim/");
   dir->SetGuidance("UI commands specific to this example.");
   geoDir = new G4UIdirectory("/mask_sim/geom/");
@@ -74,50 +88,47 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* myDet)
   outputTextCmd->AvailableForStates(G4State_PreInit);
 }
 
-DetectorMessenger::~DetectorMessenger()
+Messenger::~Messenger()
 {
-	delete dir;
-	delete geoDir;
-	delete detDir;
-	delete maskDir;
+
 }
 
-void DetectorMessenger::SetNewValue(G4UIcommand* cmd, G4String val)
+void Messenger::SetNewValue(G4UIcommand* cmd, G4String val)
 {
-	if (cmd == maskHeightCmd)
+ if (cmd == maskHeightCmd)
 	{
-		detector->SetMaskHeight(maskHeightCmd->GetNewDoubleValue(val));
+		maskHeight=(maskHeightCmd->GetNewDoubleValue(val));
 	}
 	else if (cmd == maskPixSizeCmd)
 	{
-		detector->SetMaskPixSize(maskPixSizeCmd->GetNewDoubleValue(val));		
+		maskPixSize=(maskPixSizeCmd->GetNewDoubleValue(val));		
 	}
 	else if (cmd == detDistToMaskCmd)
 	{
-		detector->SetDetDistToMask(detDistToMaskCmd->GetNewDoubleValue(val));		
+		detDistToMask=(detDistToMaskCmd->GetNewDoubleValue(val));		
 	}
 	else if (cmd == collimatorTypeCmd)
 	{
-		detector->SetCollimatorType(collimatorTypeCmd->GetNewIntValue(val));		
+		collimatorType=(collimatorTypeCmd->GetNewIntValue(val));		
 	}
 	else if (cmd == sourceHolderTypeCmd)
 	{
-		detector->SetSourceHolderType(sourceHolderTypeCmd->GetNewIntValue(val));		
+		sourceHolderType=(sourceHolderTypeCmd->GetNewIntValue(val));		
 	}
 	else if (cmd == sourceHolderPosCmd)
 	{
-		detector->SetSourceHolderPos(sourceHolderPosCmd->GetNew3VectorValue(val));		
+		sourceHolderPos=(sourceHolderPosCmd->GetNew3VectorValue(val));		
 	}
 	else if (cmd == sourceHolderRotCmd)
 	{
-		detector->SetSourceHolderRot(sourceHolderRotCmd->GetNew3VectorValue(val));		
+		sourceHolderRot=(sourceHolderRotCmd->GetNew3VectorValue(val));		
 	}
 	else if (cmd == outputBinaryCmd)
 	{
-		detector->binaryOutput=(outputBinaryCmd->GetNewBoolValue(val));		
+		binaryOutput=(outputBinaryCmd->GetNewBoolValue(val));		
 	}
 	else if (cmd == outputTextCmd)
 	{
-		detector->textOutput=(outputTextCmd->GetNewBoolValue(val));		
+		textOutput=(outputTextCmd->GetNewBoolValue(val));		
 	}
 }

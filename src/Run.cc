@@ -1,6 +1,7 @@
 #include "Run.hh"
 #include "TrackHit.hh"
-#include "DetectorConstruction.hh"
+//#include "DetectorConstruction.hh"
+#include "Messenger.hh"
 
 #include "G4Run.hh"
 #include "G4Step.hh"
@@ -11,6 +12,8 @@ using namespace std;
 
 Run::Run(const std::vector<G4String> SDName) : G4Run()
 {
+  textOutput=Messenger::textOutput;
+  binaryOutput=Messenger::binaryOutput;
 }
 
 Run::~Run()
@@ -74,6 +77,7 @@ void Run::RecordEvent(const G4Event* aEvent)
   double* xx = new double[NbHits]; 
   double* yy = new double[NbHits];
   double* zz = new double[NbHits];
+  double* ener = new double[NbHits];
 
    //getting data from thisHit
   for (int i=0;i<NbHits;i++)
@@ -85,13 +89,14 @@ void Run::RecordEvent(const G4Event* aEvent)
     yy[i] = thisHit->GetY();
     zz[i] = thisHit->GetZ();
     gTime[i] = thisHit->GetGlobalTime();
+    ener[i] = thisHit->GetTotalEnergy();
   }
   
   //output files is started...
   for (int i=0;i<NbHits;i++)
   {
     //binary data file...
-    if (DetectorConstruction::binaryOutput == 1)
+    if (binaryOutput == 1)
     {
       std::ofstream ofs;
       ofs.open("output/data.bin",std::iostream::app | std::iostream::binary);
@@ -108,17 +113,17 @@ void Run::RecordEvent(const G4Event* aEvent)
     }
     
     //text data file...
-    if (DetectorConstruction::textOutput==1)
+    if (textOutput==1)
     {
       std::ofstream ofs;
       ofs.open("output/data.txt",std::iostream::app);
       if ((parName[i] == "gamma") or (parName[i]=="e-"))
       {
-        ofs << xx[i] << "  " << yy[i] << "  " << zz[i] << "  " << 
-        edep[i] << "  " << gTime[i] << endl; 
+        ofs << parName[i] << "  " << xx[i] << "  " << yy[i] << "  " << zz[i] << "  " << 
+        edep[i] << "  " << ener[i] << "  " << gTime[i] << endl; 
+        
+        if(i==NbHits-1) { ofs << endl; }
       }
-      if(i==NbHits-1)
-      { ofs << endl; }
       ofs.close();
     }
   } 

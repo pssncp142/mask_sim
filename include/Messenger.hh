@@ -1,11 +1,10 @@
-#ifndef DetectorMessenger_h
-#define DetectorMessenger_h 1
+#ifndef Messenger_h
+#define Messenger_h 1
 
 #include "globals.hh"
 #include "G4UImessenger.hh"
+#include "G4ThreeVector.hh"
 
-class DetectorConstruction;
-class Run;
 class G4UIdirectory;
 class G4UIcmdWithAString;
 class G4UIcmdWithoutParameter;
@@ -15,19 +14,30 @@ class G4UIcmdWithABool;
 class G4UIcmdWith3Vector;
 class G4UIcmdWith3VectorAndUnit;
 
-class DetectorMessenger: public G4UImessenger
+class Messenger: public G4UImessenger
 {
   public:
 
-    DetectorMessenger(DetectorConstruction*);
-   ~DetectorMessenger();
-    
+    Messenger();
+   ~Messenger();
+    static G4bool binaryOutput;
+    static G4bool textOutput;
+    static G4double detDistToMask;
+    static G4double maskPixSize;
+    static G4double maskHeight;
+    static G4bool maskOn;
+    static G4bool detectorOn;
+    static G4bool inclboxOn;
+    static G4bool AlBoxCoverOn;
+    static G4int collimatorType;
+    static G4int sourceHolderType;
+    static G4ThreeVector sourceHolderPos;
+    static G4ThreeVector sourceHolderRot;
+        
     void SetNewValue(G4UIcommand*, G4String);
     
-  private:
-
-    DetectorConstruction* detector;
-    
+  private: 
+  
     G4UIdirectory* dir;
     G4UIdirectory* geoDir;
     G4UIdirectory* detDir;
@@ -47,8 +57,6 @@ class DetectorMessenger: public G4UImessenger
     G4UIdirectory* outputDir;
     G4UIcmdWithABool* outputBinaryCmd;
     G4UIcmdWithABool* outputTextCmd;
-    
 };
 
 #endif
-

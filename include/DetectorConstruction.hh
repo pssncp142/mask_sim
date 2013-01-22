@@ -17,6 +17,7 @@
 #include "Messenger.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "G4LogicalVolume.hh"
+#include "G4RotationMatrix.hh"
 #include "globals.hh"
 
 class SensitiveDetector;
@@ -60,6 +61,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int sourceHolderType;
 		G4ThreeVector sourceHolderPos;
 		G4ThreeVector sourceHolderRot;
+		G4double shiftCollimator;
+		G4RotationMatrix rotm;
 		
   	G4Material* Air; G4Material* Pb;
   	G4Material* Al;  G4Element* Cd;

@@ -9,7 +9,8 @@
 
 /**********************************************************************************
   Notes :
-  (1) Find a solution for rotation of the volumes.
+  **(1) Find a solution for rotation of the volumes.
+  -G4Transform3D solves the problem rotates the problem in daughter volume coordinates 
   (2) Collimator definitions should be added.
   (3) Maybe it should be useful to import some static values.
 ***********************************************************************************/
@@ -35,6 +36,7 @@
 #include "G4SolidStore.hh"
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
+#include "G4Transform3D.hh"
 
 /**********************************************************************************************/
 
@@ -141,11 +143,11 @@ void DetectorConstruction::ConstructCollimator(G4int type)
 void DetectorConstruction::ConstructSourceHolder(G4int type)
 {
   // Is it a best way to do !!!!!!!!!!!!!!!!!!!!!
-  G4RotationMatrix* rotm = new G4RotationMatrix();
-  rotm->rotateX(sourceHolderRot.getX()*degree);
-  rotm->rotateY(sourceHolderRot.getY()*degree);
-  rotm->rotateZ(sourceHolderRot.getZ()*degree);      
-  G4ThreeVector unit_vector = (rotm->getAxis()).unit();
+  G4RotationMatrix rotm = *(new G4RotationMatrix());
+  rotm.rotateX(sourceHolderRot.getX()*degree);
+  rotm.rotateY(sourceHolderRot.getY()*degree);
+  rotm.rotateZ(sourceHolderRot.getZ()*degree);      
+  //G4ThreeVector unit_vector = (rotm->getAxis()).unit();
   
   switch (type)
   {  
@@ -175,8 +177,8 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
 
       G4ThreeVector refFrame1 = G4ThreeVector(0,0,heightOfTheHolderCs137);//*unit_vector;
       //G4ThreeVector refFrame1 = heightOfTheHolderCs137*unit_vector;
-      refFrame1.rotateX(-sourceHolderRot.getX()*degree);
-      refFrame1.rotateY(-sourceHolderRot.getY()*degree);
+      refFrame1.rotateX(sourceHolderRot.getX()*degree);
+      refFrame1.rotateY(sourceHolderRot.getY()*degree);
       refFrame1.rotateZ(sourceHolderRot.getZ()*degree);
              
       /*// ShiftHolder. Needed below!.
@@ -224,9 +226,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
       // Position of the Cs 137 holder.
       G4ThreeVector AlCs137HolderPos = sourceHolderPos + refFrame1;
 
-         // Define physical and logical volume.
+         // Define physical and logical volume.   
       G4LogicalVolume* AlCs137HolderLogic = new G4LogicalVolume(AlCs137Holder, Al, "AlCs137HolderLogic",0,0,0);        
-      G4VPhysicalVolume* AlCs137HolderPhys = new G4PVPlacement(rotm, AlCs137HolderPos, AlCs137HolderLogic,
+      G4VPhysicalVolume* AlCs137HolderPhys = new G4PVPlacement(G4Transform3D(rotm,AlCs137HolderPos), AlCs137HolderLogic,
              "AlCs137HolderPhys", World_log, false, 0);
          
       // Is volume visible?
@@ -319,7 +321,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          
          // Define physical and logical volumes.
          G4LogicalVolume* LeadInsideCs137Logic = new G4LogicalVolume(secondSubtractCs137Volume, Pb, "LeadInsideCs137Logic",0,0,0);
-         G4VPhysicalVolume* LeadInsideCs137Phys = new G4PVPlacement(rotm, LeadInsideCs137Pos, LeadInsideCs137Logic,
+         G4VPhysicalVolume* LeadInsideCs137Phys = new G4PVPlacement(G4Transform3D(rotm, LeadInsideCs137Pos), LeadInsideCs137Logic,
              "LeadInsideCs137Phys", World_log, false, 0);
          
          // Is volume visible?
@@ -363,15 +365,15 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          // Position of the cap.
          G4ThreeVector refFrame2 = G4ThreeVector(0,0,heightOfTheLeadInside1+heightOfTheSourceHolderCoverCs1372+heightOfTheLeadInside3/2.0);
          //G4ThreeVector refFrame2 = unit_vector*(heightOfTheLeadInside1+heightOfTheSourceHolderCoverCs1372+heightOfTheLeadInside3/2.0);
-         refFrame2.rotateX(-sourceHolderRot.getX()*degree);
-         refFrame2.rotateY(-sourceHolderRot.getY()*degree);
+         refFrame2.rotateX(sourceHolderRot.getX()*degree);
+         refFrame2.rotateY(sourceHolderRot.getY()*degree);
          refFrame2.rotateZ(sourceHolderRot.getZ()*degree);
  
          G4ThreeVector sourceHolderCoverCs137Pos = sourceHolderPos + refFrame1 + refFrame2;
         
          // Define physical and logical volume.
          G4LogicalVolume* sourceHolderCoverCs137Logic = new G4LogicalVolume(sourceHolderCoverCs137, Al, "sourceHolderCoverCs137",0,0,0); 
-         G4VPhysicalVolume* sourceHolderCoverCs137Phys = new G4PVPlacement(rotm, sourceHolderCoverCs137Pos, sourceHolderCoverCs137Logic,
+         G4VPhysicalVolume* sourceHolderCoverCs137Phys = new G4PVPlacement(G4Transform3D(rotm, sourceHolderCoverCs137Pos), sourceHolderCoverCs137Logic,
              "sourceHolderCoverCs137Phys", World_log, false, 0);
        
          // Is volume visible?
@@ -398,9 +400,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          G4double heightOfTheHolderSecond = 3.0005*cm/2.0;
          
          G4ThreeVector refFrame = G4ThreeVector(0,0,heightOfTheHolderFirst);
-         refFrame.rotateZ(-sourceHolderRot.getZ()*degree);      
-         refFrame.rotateY(-sourceHolderRot.getY()*degree);
-         refFrame.rotateX(-sourceHolderRot.getX()*degree);
+         refFrame.rotateZ(sourceHolderRot.getZ()*degree);      
+         refFrame.rotateY(sourceHolderRot.getY()*degree);
+         refFrame.rotateX(sourceHolderRot.getX()*degree);
          
          
          /*// ShiftHolder. Needed below!.
@@ -440,7 +442,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          
          // Define logical and physical volume.
          G4LogicalVolume* holderUnionVolumeLogic = new G4LogicalVolume(holderUnionVolume, Al, "holderUnionVolume",0,0,0);
-         G4VPhysicalVolume* holderUnionVolumePhys = new G4PVPlacement(rotm, holderUnionVolumePos, holderUnionVolumeLogic,
+         G4VPhysicalVolume* holderUnionVolumePhys = new G4PVPlacement(G4Transform3D(rotm, holderUnionVolumePos), holderUnionVolumeLogic,
              "holderUnionVolumePhys", World_log, false, 0);
          
          // Is volume visible?            
@@ -494,15 +496,15 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          
          // Position of the holder.
          G4ThreeVector refFrame1 = G4ThreeVector(0,0,heightOfTheLeadInside3);         
-         refFrame1.rotateZ(-sourceHolderRot.getZ()*degree);      
-         refFrame1.rotateY(-sourceHolderRot.getY()*degree); 
-         refFrame1.rotateX(-sourceHolderRot.getX()*degree);
+         refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
+         refFrame1.rotateY(sourceHolderRot.getY()*degree); 
+         refFrame1.rotateX(sourceHolderRot.getX()*degree);
          
          G4ThreeVector firstSubtractPos = sourceHolderPos + refFrame + refFrame1;
          
          // Definition of logical and physical volume.
          G4LogicalVolume* firstSubtractLogic = new G4LogicalVolume(secondSubtractVolume, Pb, "firstSubtractVolume",0,0,0);
-         G4VPhysicalVolume* firstSubtractPhys = new G4PVPlacement(rotm, firstSubtractPos, firstSubtractLogic,
+         G4VPhysicalVolume* firstSubtractPhys = new G4PVPlacement(G4Transform3D(rotm, firstSubtractPos), firstSubtractLogic,
              "firstSubtractPhys", World_log, false, 0);
                 
          // Is volume visible?          
@@ -549,14 +551,14 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
                     
          // Position of the lead cover if the source holder is Am 241 or Cd 109.
          refFrame1 = G4ThreeVector(0,0,heightOfTheLeadInside1+heightOfTheSourceHolderCover2+heightOfTheHolderSecond/2.0-2.0*heightOfTheLeadInside3);
-         refFrame1.rotateX(-sourceHolderRot.getX()*degree);
-         refFrame1.rotateY(-sourceHolderRot.getY()*degree);
+         refFrame1.rotateX(sourceHolderRot.getX()*degree);
+         refFrame1.rotateY(sourceHolderRot.getY()*degree);
          refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
 
          G4ThreeVector sourceHolderCoverPos = sourceHolderPos + refFrame + refFrame1;         
 
          // Physical volume of the cover id the source holder is Am 241 or Cd 109.
-         G4VPhysicalVolume* sourceHolderCoverPhys = new G4PVPlacement(rotm, sourceHolderCoverPos, sourceHolderCoverLogic,
+         G4VPhysicalVolume* sourceHolderCoverPhys = new G4PVPlacement(G4Transform3D(rotm, sourceHolderCoverPos), sourceHolderCoverLogic,
              "sourceHolderCoverPhys", World_log, false, 0);
         
          // Is volume visible?

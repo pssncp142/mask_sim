@@ -16,7 +16,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   //particleGun = new G4ParticleGun();
   particleSource = new G4GeneralParticleSource();
   G4SPSPosDistribution *posDist = particleSource->GetCurrentSource()->GetPosDist();
-  posDist->SetCentreCoords(Messenger::sourceHolderPos+G4ThreeVector(0,0,4.*cm));	
+  posDist->SetCentreCoords(Messenger::sourceHolderPos+Messenger::sourceRefPos);	
 }   
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()

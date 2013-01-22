@@ -33,6 +33,7 @@ class Messenger: public G4UImessenger
     static G4int sourceHolderType;
     static G4ThreeVector sourceHolderPos;
     static G4ThreeVector sourceHolderRot;
+    static G4ThreeVector sourceRefPos;
         
     void SetNewValue(G4UIcommand*, G4String);
     

@@ -22,6 +22,7 @@ G4int Messenger::collimatorType = 0;
 G4int Messenger::sourceHolderType = 1;
 G4ThreeVector Messenger::sourceHolderPos = G4ThreeVector(0*mm,0*mm,0*mm);
 G4ThreeVector Messenger::sourceHolderRot = G4ThreeVector(0,0,0);
+G4ThreeVector Messenger::sourceRefPos = G4ThreeVector(0,0,0);
 
 Messenger::Messenger()
 {

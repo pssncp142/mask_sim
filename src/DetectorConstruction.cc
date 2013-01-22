@@ -11,7 +11,7 @@
   Notes :
   **(1) Find a solution for rotation of the volumes.
   -G4Transform3D solves the problem rotates the problem in daughter volume coordinates 
-  (2) Collimator definitions should be added.
+  **(2) Collimator definitions should be added.
   (3) Maybe it should be useful to import some static values.
 ***********************************************************************************/
 
@@ -61,7 +61,29 @@ DetectorConstruction::DetectorConstruction()
   rotm.rotateX(sourceHolderRot.getX()*degree);
   rotm.rotateY(sourceHolderRot.getY()*degree);
   rotm.rotateZ(sourceHolderRot.getZ()*degree);      
-  
+
+  G4double sourceRefDist=0;  
+  //shift of source holder due to existence of collimator...
+  //And source distance is looked here...
+  if (collimatorType == 0) 
+  {  
+    if (sourceHolderType == 1){sourceRefDist = 5.25*cm;} 
+    if (sourceHolderType == 2){sourceRefDist = 3.75*cm;}
+    shiftCollimator = 1.0*cm;
+  } 
+  else if (collimatorType == 1)
+  {
+    if (sourceHolderType == 1){sourceRefDist = 6.75*cm;} 
+    if (sourceHolderType == 2){sourceRefDist = 5.25*cm;}
+    shiftCollimator = 2.5*cm;
+  }
+
+  //Position vector of the source is sended to messenger...
+  G4ThreeVector sourceRefPos = G4ThreeVector(0,0,sourceRefDist);
+  sourceRefPos.rotateX(sourceHolderRot.getX()*degree);
+  sourceRefPos.rotateY(sourceHolderRot.getY()*degree);
+  sourceRefPos.rotateZ(sourceHolderRot.getZ()*degree);      
+  Messenger::sourceRefPos = sourceRefPos;  
 }
 
 /**********************************************************************************************/
@@ -322,18 +344,6 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
       G4double innerRadiusOfOuterCutCs137 = 8.0*cm/2.0;
       G4double outerRadiusOfOuterCutCs137 = 10.6*cm/2.0;
       G4double heightOfOuterCutCs137 = 7.3*cm/2.0;
-       
-      // ShiftHolder. Needed below!.
-      // 1.5*cm is the thickness of the collimator for Am, Co and Cd.
-      // Shift depends on the existence of collimator.
-      if (collimatorType == 0)
-      {
-         shiftCollimator = 1.0*cm;
-      } 
-      else if (collimatorType==1)
-      {  
-         shiftCollimator = 2.5*cm;
-      } 
          
       // Define volumes.
       G4Tubs* InnerCut = new G4Tubs("InnerCut",
@@ -544,18 +554,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          G4double innerRadiusOfTheHolderSecond = 0.0*mm;
          G4double outerRadiusOfTheHolderSecond = 1.75*cm;
          G4double heightOfTheHolderSecond = 3.0005*cm/2.0;
-         
-         // ShiftHolder. Needed below!.
-         // 1.5*cm is the thickness of the collimator for Am, Co and Cd.
-         // Shift depends on the existence of collimator.
-         if (collimatorType == 0) 
-         {
-           shiftCollimator = 1.0*cm;
-         } else if (collimatorType == 1)
-         {
-           shiftCollimator = 2.5*cm;
-         }
-         
+             
          // Define volumes.
          G4Tubs* firstUnionVolume = new G4Tubs("firstUnionVolume",
              innerRadiusOfTheHolderFirst,

@@ -65,6 +65,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4RotationMatrix rotm;
 		
   	G4Material* Air; G4Material* Pb;
+  	G4Material* W;
   	G4Material* Al;  G4Element* Cd;
   	G4Element* Zn;  G4Element* Te;
   	G4Material* CdZnTe;
@@ -78,7 +79,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* AlCs137HolderPhys;
     G4VPhysicalVolume* LeadInsideCs137Phys;
     G4VPhysicalVolume* sourceHolderCoverCs137Phys;
-    
+    G4VPhysicalVolume* collAluminumCoverPhys;
+    G4VPhysicalVolume* collTungstenPhys;
+    G4VPhysicalVolume* collLeadPhys;  
+    G4VPhysicalVolume* collAluminumBigPhys;
+    G4VPhysicalVolume* collAluminumSmallPhys;
     G4VSolid* World_sol;						G4LogicalVolume* World_log;		
     G4VPhysicalVolume* World_phys;  
 

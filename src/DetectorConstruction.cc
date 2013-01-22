@@ -160,7 +160,7 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     G4ThreeVector collAluminumCoverPos = sourceHolderPos + refFrame;
     
     // Definition of logical and physical volume.
-    collAluminumCoverLogic = new G4LogicalVolume(collAluminumCover, Al, "collAluminumCover",0,0,0);
+    G4LogicalVolume* collAluminumCoverLogic = new G4LogicalVolume(collAluminumCover, Al, "collAluminumCover",0,0,0);
     collAluminumCoverPhys = new G4PVPlacement(G4Transform3D(rotm,collAluminumCoverPos), collAluminumCoverLogic,
         "collAluminumCoverPhys", World_log, false, 0);
  
@@ -187,7 +187,7 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     G4ThreeVector collTungstenPos = sourceHolderPos + refFrame + refFrame1;
 
     // Definition of logical and physical volume.
-    collTungstenLogic = new G4LogicalVolume(collTungsten, W, "collTungsten",0,0,0);
+    G4LogicalVolume* collTungstenLogic = new G4LogicalVolume(collTungsten, W, "collTungsten",0,0,0);
     collTungstenPhys = new G4PVPlacement(G4Transform3D(rotm,collTungstenPos), collTungstenLogic,
         "collTungstenPhys", World_log, false, 0);
    
@@ -211,7 +211,7 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     G4ThreeVector collLeadPos = collTungstenPos;
     
     // Definition of logical and physical volume.
-    collLeadLogic = new G4LogicalVolume(collLead, Pb, "collLead",0,0,0);
+    G4LogicalVolume* collLeadLogic = new G4LogicalVolume(collLead, Pb, "collLead",0,0,0);
     collLeadPhys = new G4PVPlacement(G4Transform3D(rotm,collLeadPos), collLeadLogic,
         "collLeadPhys", World_log, false, 0);
 
@@ -235,13 +235,13 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     
     // Position of the cover.
     refFrame1 = G4ThreeVector(0,0,heightOfTheTubeAlC+heightOfTheTubeAlB);
-    refFrame.rotateX(sourceHolderRot.getX()*degree);
-    refFrame.rotateY(sourceHolderRot.getY()*degree);
-    refFrame.rotateZ(sourceHolderRot.getZ()*degree);      
+    refFrame1.rotateX(sourceHolderRot.getX()*degree);
+    refFrame1.rotateY(sourceHolderRot.getY()*degree);
+    refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
     G4ThreeVector collAluminumBigPos = sourceHolderPos + refFrame + refFrame1;
     
     // Definition of logical and physical volume.
-    collAluminumBigLogic = new G4LogicalVolume(collAluminumBig, Al, "collAluminumBig",0,0,0);
+    G4LogicalVolume* collAluminumBigLogic = new G4LogicalVolume(collAluminumBig, Al, "collAluminumBig",0,0,0);
     collAluminumBigPhys = new G4PVPlacement(G4Transform3D(rotm,collAluminumBigPos), collAluminumBigLogic,
         "collAluminumBigPhys", World_log, false, 0);
     
@@ -270,14 +270,14 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     G4SubtractionSolid* collAluminumSmall = new G4SubtractionSolid("Coll_AluminumSmall", collAluminumSmallBefore, subtractVolume, 0, zTrans);
     
     // Position of the aluminum cap.
-    refFrame1 = G4ThreeVector(0,0,heightOfTheTubeAlC+heightOftheTubeAlB+2*mm);
+    refFrame1 = G4ThreeVector(0,0,heightOfTheTubeAlC+heightOfTheTubeAlB+2*mm);
     refFrame1.rotateX(sourceHolderRot.getX()*degree);
     refFrame1.rotateY(sourceHolderRot.getY()*degree);
     refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
     G4ThreeVector collAluminumSmallPos = sourceHolderPos + refFrame + refFrame1;
 
     // Definition of logical and physical volume.
-    collAluminumSmallLogic = new G4LogicalVolume(collAluminumSmall, Al, "collAluminumSmall",0,0,0);
+    G4LogicalVolume* collAluminumSmallLogic = new G4LogicalVolume(collAluminumSmall, Al, "collAluminumSmall",0,0,0);
     collAluminumSmallPhys = new G4PVPlacement(G4Transform3D(rotm,collAluminumSmallPos), collAluminumSmallLogic,
         "collAluminumSmallPhys", World_log, false, 0);
     
@@ -579,9 +579,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          
          // Position of the holder.
          G4ThreeVector refFrame = G4ThreeVector(0,0,heightOfTheHolderFirst+shiftCollimator);
-         refFrame.rotateZ(sourceHolderRot.getZ()*degree);      
+         refFrame.rotateX(sourceHolderRot.getX()*degree);      
          refFrame.rotateY(sourceHolderRot.getY()*degree);
-         refFrame.rotateX(sourceHolderRot.getX()*degree);         
+         refFrame.rotateZ(sourceHolderRot.getZ()*degree);         
          G4ThreeVector holderUnionVolumePos = sourceHolderPos + refFrame;
          
          // Define logical and physical volume.
@@ -640,9 +640,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          
          // Position of the holder.
          G4ThreeVector refFrame1 = G4ThreeVector(0,0,heightOfTheLeadInside3);         
-         refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
+         refFrame1.rotateX(sourceHolderRot.getX()*degree);      
          refFrame1.rotateY(sourceHolderRot.getY()*degree); 
-         refFrame1.rotateX(sourceHolderRot.getX()*degree);         
+         refFrame1.rotateZ(sourceHolderRot.getZ()*degree);         
          G4ThreeVector firstSubtractPos = sourceHolderPos + refFrame + refFrame1;
          
          // Definition of logical and physical volume.
@@ -816,6 +816,7 @@ void DetectorConstruction::DefineMaterials()
   Air = GET_MATERIAL("G4_AIR"); 
   Pb = GET_MATERIAL("G4_Pb");
   Al = GET_MATERIAL("G4_Al");
+  W  = GET_MATERIAL("G4_W");
   G4Element* Cd = new G4Element("Cadmium", symbol="Cd", z=48, a=112.411*g/mole);
   G4Element* Zn = new G4Element("Zinc", symbol="Zn", z=30, a=65.39*g/mole);
   G4Element* Te = new G4Element("Tellurium", symbol="Te", z=52, a=127.6*g/mole);

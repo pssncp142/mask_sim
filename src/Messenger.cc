@@ -14,12 +14,13 @@ G4bool Messenger::textOutput = 0;
 G4double Messenger::detDistToMask = 34*mm;
 G4double Messenger::maskPixSize  = 1.2*mm;
 G4double Messenger::maskHeight = 2*mm;
-G4bool Messenger::maskOn = 1;
-G4bool Messenger::detectorOn = 1;
-G4bool Messenger::inclboxOn = 1;
+G4bool Messenger::spectrumOn = 0;
+G4bool Messenger::maskOn = 0;
+G4bool Messenger::detectorOn = 0;
+G4bool Messenger::inclboxOn = 0;
 G4bool Messenger::AlBoxCoverOn = 0;
 G4int Messenger::collimatorType = 0;
-G4int Messenger::sourceHolderType = 1;
+G4int Messenger::sourceHolderType = 0;
 G4ThreeVector Messenger::sourceHolderPos = G4ThreeVector(0*mm,0*mm,0*mm);
 G4ThreeVector Messenger::sourceHolderRot = G4ThreeVector(0,0,0);
 G4ThreeVector Messenger::sourceRefPos = G4ThreeVector(0,0,0);
@@ -40,6 +41,11 @@ Messenger::Messenger()
   collimatorDir->SetGuidance("collimator commands.");
   outputDir = new G4UIdirectory("/mask_sim/output/");
   outputDir->SetGuidance("output file commands.");
+
+  spectrumOnCmd = new G4UIcmdWithABool("/mask_sim/spectrum",this);
+  spectrumOnCmd->SetGuidance("Test Radioactive spectrum.");
+  spectrumOnCmd->SetParameterName("choice",false);
+  spectrumOnCmd->AvailableForStates(G4State_PreInit);
 
   maskHeightCmd = new G4UIcmdWithADoubleAndUnit("/mask_sim/geom/mask/height",this);
   maskHeightCmd->SetGuidance("Set the height of the mask.");
@@ -96,7 +102,7 @@ Messenger::~Messenger()
 
 void Messenger::SetNewValue(G4UIcommand* cmd, G4String val)
 {
- if (cmd == maskHeightCmd)
+  if (cmd == maskHeightCmd)
 	{
 		maskHeight=(maskHeightCmd->GetNewDoubleValue(val));
 	}
@@ -131,5 +137,9 @@ void Messenger::SetNewValue(G4UIcommand* cmd, G4String val)
 	else if (cmd == outputTextCmd)
 	{
 		textOutput=(outputTextCmd->GetNewBoolValue(val));		
+	}
+	else if (cmd == spectrumOnCmd)
+	{
+	  spectrumOn=(spectrumOnCmd->GetNewBoolValue(val));
 	}
 }

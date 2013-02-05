@@ -22,6 +22,7 @@ Run::Run(const std::vector<G4String> SDName) : G4Run()
 {
   textOutput=Messenger::textOutput;
   binaryOutput=Messenger::binaryOutput;
+  spectrumOn=Messenger::spectrumOn;
 }
 
 Run::~Run()
@@ -84,7 +85,11 @@ void Run::RecordEvent(const G4Event* aEvent)
   double* yy = new double[NbHits];
   double* zz = new double[NbHits];
   double* ener = new double[NbHits];
-
+  double* parentID = new double[NbHits];
+  double* trackID = new double[NbHits];
+  double* vertexX = new double[NbHits];
+  double* vertexY = new double[NbHits];
+  double* vertexZ = new double[NbHits];
    //getting data from thisHit
   for (int i=0;i<NbHits;i++)
   {
@@ -96,11 +101,28 @@ void Run::RecordEvent(const G4Event* aEvent)
     zz[i] = thisHit->GetZ();
     gTime[i] = thisHit->GetGlobalTime();
     ener[i] = thisHit->GetTotalEnergy();
+    parentID[i] = thisHit->GetParentID();
+    trackID[i] = thisHit->GetTrackID();
+    G4ThreeVector vertexPos = thisHit->GetVertexPos();
+    vertexX[i] = vertexPos.getX();
+    vertexY[i] = vertexPos.getY();
+    vertexZ[i] = vertexPos.getZ();
   }
-  
+  int j = 0;
   //output files is started...
   for (int i=0;i<NbHits;i++)
   {
+    if (spectrumOn)
+    {
+      std::ofstream ofs1;
+      ofs1.open("output/gammadata.bin",std::iostream::app | std::iostream::binary);
+      if (parName[i] == "gamma" and ((ener[i]<0.123 and ener[i]>0.122) or (ener[i]<0.137 and ener[i]>0.136) or (ener[i]<0.015 and ener[i]>0.014)))
+      {
+        ofs1.write((char*)(&ener[i]), sizeof(double));
+      }
+      ofs1.close();
+    }
+   
     //binary data file...
     if (binaryOutput == 1)
     {
@@ -123,9 +145,9 @@ void Run::RecordEvent(const G4Event* aEvent)
     {
       std::ofstream ofs;
       ofs.open("output/data.txt",std::iostream::app);
-      if ((parName[i] == "gamma") or (parName[i]=="e-"))
+      if (true) //(parName[i] == "gamma") or (parName[i]=="e-"))
       {
-        ofs << parName[i] << "  " << xx[i] << "  " << yy[i] << "  " << zz[i] << "  " << 
+        ofs << vertexX[i] << "  " << vertexY[i] << "  " << parName[i] << "  " << xx[i] << "  " << yy[i] << "  " << zz[i] << "  " << 
         edep[i] << "  " << ener[i] << "  " << gTime[i] << endl; 
         
         if(i==NbHits-1) { ofs << endl; }

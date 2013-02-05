@@ -41,6 +41,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		
   private:
   
+    void ConstructSpectrumMode();
 		void ConstructAlBoxCover();
 		void ConstructInclinedBox();
 		void ConstructMask();   
@@ -52,7 +53,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4double worldSize;    
 		G4double detDistToMask;
 		G4double maskPixSize;
-		G4double maskHeight;   
+		G4double maskHeight;
+		G4bool spectrumOn;   
 		G4bool maskOn;
 		G4bool detectorOn;
 		G4bool inclboxOn;

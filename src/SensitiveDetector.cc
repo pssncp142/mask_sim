@@ -51,11 +51,15 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory* THist)
 	G4String parName = aTrack->GetParticleDefinition()->GetParticleName(); 
 	G4double gTime = aTrack->GetGlobalTime(); 
 	G4ThreeVector pos = aTrack->GetPosition();
+	//G4ThreeVector vertex_pos = preStep->GetPosition();
+	G4ThreeVector vertex_pos = aTrack->GetVertexPosition();
 	G4double xx = pos.x();
 	G4double yy = pos.y();
 	G4double zz = pos.z();
 	G4double edep = aStep->GetTotalEnergyDeposit();
   G4double ener = preStep->GetTotalEnergy();
+  G4double parentID = aTrack->GetParentID();
+  G4double trackID = aTrack->GetTrackID();
 	//G4cout << parName;
 	TrackHit* thisHit = new TrackHit();
 
@@ -68,6 +72,9 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep,G4TouchableHistory* THist)
 	thisHit->SetEdep(edep);
 	thisHit->SetGlobalTime(gTime);
 	thisHit->SetTotalEnergy(ener);
+	thisHit->SetParentID(parentID);
+	thisHit->SetTrackID(trackID);
+	thisHit->SetVertexPos(vertex_pos);
 	//*****************************************************************
 	HitCollection->insert(thisHit);
 	return false;

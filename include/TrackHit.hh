@@ -26,13 +26,16 @@ public :
   
   /*************************************************************************************/	
   //GETS
-  G4String GetParName() {return parName;};
+  G4String GetParName() {return parName;}
   G4double GetX() {return xx;}
   G4double GetY() {return yy;}
   G4double GetZ() {return zz;}
   G4double GetEdep() {return edep;}
-  G4double GetGlobalTime() {return gTime;};
+  G4double GetGlobalTime() {return gTime;}
   G4double GetTotalEnergy() {return ener;}
+  G4double GetParentID() {return parentID;}
+  G4double GetTrackID() {return trackID;}
+  G4ThreeVector GetVertexPos() {return vertexPos;}
   /*************************************************************************************/
   //SETS
   void SetParName(G4String val)	{parName=val;};
@@ -42,6 +45,9 @@ public :
   void SetEdep(G4double val) {edep=val;};
   void SetGlobalTime(G4double val) {gTime=val;};
   void SetTotalEnergy(G4double val) {ener=val;};
+  void SetParentID(G4double val) {parentID=val;};
+  void SetTrackID(G4double val) {trackID=val;};
+  void SetVertexPos(G4ThreeVector val) {vertexPos=val;};
   /*************************************************************************************/	
 private :	
   /*************************************************************************************/
@@ -53,6 +59,9 @@ private :
   G4double edep; 
   G4double gTime;			
   G4double ener;
+  G4double parentID;
+  G4double trackID;
+  G4ThreeVector vertexPos;
   /*************************************************************************************/
 
 };

@@ -25,6 +25,7 @@
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4Trd.hh"
+#include "G4Sphere.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
@@ -47,6 +48,7 @@ DetectorConstruction::DetectorConstruction()
   detDistToMask = Messenger::detDistToMask;
   maskPixSize  = Messenger::maskPixSize;
   maskHeight = Messenger::maskHeight;
+  spectrumOn = Messenger::spectrumOn;
   maskOn = Messenger::maskOn;
   detectorOn = Messenger::detectorOn;
   inclboxOn = Messenger::inclboxOn;
@@ -55,7 +57,7 @@ DetectorConstruction::DetectorConstruction()
   sourceHolderType = Messenger::sourceHolderType;
   sourceHolderPos = Messenger::sourceHolderPos;
   sourceHolderRot = Messenger::sourceHolderRot;
-
+  
   // Is it a best way to do !!!!!!!!!!!!!!!!! Yes ;)
   rotm = *(new G4RotationMatrix());
   rotm.rotateX(sourceHolderRot.getX()*degree);
@@ -104,24 +106,51 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   World_log = new G4LogicalVolume(World_sol,Air,"World");		
   World_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),World_log,"World",0,false,0);  
   World_log->SetVisAttributes(G4VisAttributes::Invisible);
+    
+  sensDet = new SensitiveDetector("/SensDetector");
   
   // Geometry is building...
-	G4cout <<  "******************* GEOMETRY OPTIONS ************************" << G4endl << G4endl;
-	ConstructCollimator(collimatorType);
-	ConstructSourceHolder(sourceHolderType);
-	if (AlBoxCoverOn == 1) {ConstructAlBoxCover();} else 
-	{G4cout << "- No Aluminum Box Cover" << G4endl;}
-	if (inclboxOn == 1) {ConstructInclinedBox();} else
-	{G4cout << "- No Inclined Box" << G4endl;}
-  if (detectorOn == 1) {ConstructDetector();} else
-	{G4cout << "- No Detector" << G4endl;}
-  if (maskOn == 1) {ConstructMask();} else 
-	{G4cout << "- No Coded Mask" << G4endl;}
-	G4cout << G4endl << "**************** GEOMETRY IS INITIALISED ********************" << G4endl << G4endl;
-    
+	if (spectrumOn)
+	{
+	  G4cout <<  "*********** WARNING!!! RADIOACTIVE SPECTRUM GEOMETRY ********" << G4endl << G4endl;
+	  G4cout <<  " This means that actual simulation is not working, this is   " << G4endl <<
+	             " only for looking spectrum of given atoms. If it is not what " << G4endl <<
+	             " you are looking for you should disable spectrumOn option... " << G4endl;
+	  ConstructSpectrumMode();
+	  G4cout <<  "****************** GEOMETRY IS INITIALISED ******************" << G4endl << G4endl;
+	}
+	else
+	{
+	  G4cout <<  "******************* GEOMETRY OPTIONS ************************" << G4endl << G4endl;
+	  ConstructCollimator(collimatorType);
+	  ConstructSourceHolder(sourceHolderType);
+	  if (AlBoxCoverOn == 1) {ConstructAlBoxCover();} else 
+	  {G4cout << "- No Aluminum Box Cover" << G4endl;}
+	  if (inclboxOn == 1) {ConstructInclinedBox();} else
+	  {G4cout << "- No Inclined Box" << G4endl;}
+    if (detectorOn == 1) {ConstructDetector();} else
+	  {G4cout << "- No Detector" << G4endl;}
+    if (maskOn == 1) {ConstructMask();} else 
+	  {G4cout << "- No Coded Mask" << G4endl;}
+	  G4cout << G4endl << "**************** GEOMETRY IS INITIALISED ********************" << G4endl << G4endl;
+  }
+   
   return World_phys;
 } 
 
+/**********************************************************************************************/
+// Cosntructs radioactive spectrum test geometry... Nothing but a big sphere in the middle...
+void DetectorConstruction::ConstructSpectrumMode()
+{
+  G4VSolid* sphere_sol = new G4Sphere("sphere_sol",10*cm,11*cm,0,360,0,180);
+  G4LogicalVolume* sphere_log = new G4LogicalVolume(sphere_sol,CdZnTe,"sphere_log",0,0,0);
+  G4VPhysicalVolume *sphere_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),sphere_log,"sphere_phys",World_log,false,0);
+  sphere_log->SetVisAttributes(G4Color::Red());
+
+  G4SDManager* SDman = G4SDManager::GetSDMpointer();
+  sphere_log->SetSensitiveDetector(sensDet);	
+  SDman->AddNewDetector(sensDet);
+}
 /**********************************************************************************************/
 // Constructs Aliminum Cover...
 void DetectorConstruction::ConstructAlBoxCover()
@@ -732,8 +761,8 @@ void DetectorConstruction::ConstructInclinedBox()
 void DetectorConstruction::ConstructDetector()
 {
   G4double width = 19.54*mm;
-  G4double height = 5*mm;
-  G4double distover2 = 1.2-0.34*mm;
+  G4double height = 20*mm;
+  G4double distover2 = 0.6*mm; //1.2*mm;
   G4VSolid* detect_sol = new G4Box("detect_sol",width*0.5*mm,width*0.5*mm,height*0.5*mm);
   detect_log = new G4LogicalVolume(detect_sol,CdZnTe,"detect_log");
   detect_log->SetVisAttributes(G4Color::Yellow());  
@@ -744,7 +773,6 @@ void DetectorConstruction::ConstructDetector()
   detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*mm)*mm,detect_log,"detect_phys",World_log,false,0);
 	
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
-  sensDet = new SensitiveDetector("/SensDetector");
   detect_log->SetSensitiveDetector(sensDet);	
   SDman->AddNewDetector(sensDet);
 

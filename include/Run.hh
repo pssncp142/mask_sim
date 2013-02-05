@@ -13,7 +13,7 @@ class Run : public G4Run
 	void RecordEvent(const G4Event*);
 	
 	private :
-  G4bool textOutput,binaryOutput;
+  G4bool textOutput,binaryOutput,spectrumOn;
   time_t startT,lastT;
 	
 };

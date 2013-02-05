@@ -22,6 +22,7 @@ class Messenger: public G4UImessenger
    ~Messenger();
     static G4bool binaryOutput;
     static G4bool textOutput;
+    static G4bool spectrumOn;
     static G4double detDistToMask;
     static G4double maskPixSize;
     static G4double maskHeight;
@@ -54,6 +55,7 @@ class Messenger: public G4UImessenger
     G4UIcmdWith3VectorAndUnit* sourceHolderPosCmd;
     G4UIcmdWith3Vector* sourceHolderRotCmd;
     G4UIcmdWithoutParameter* updateCmd;    
+    G4UIcmdWithABool* spectrumOnCmd;
 
     G4UIdirectory* outputDir;
     G4UIcmdWithABool* outputBinaryCmd;

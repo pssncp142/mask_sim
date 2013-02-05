@@ -101,12 +101,12 @@ void Run::RecordEvent(const G4Event* aEvent)
     zz[i] = thisHit->GetZ();
     gTime[i] = thisHit->GetGlobalTime();
     ener[i] = thisHit->GetTotalEnergy();
-    parentID[i] = thisHit->GetParentID();
-    trackID[i] = thisHit->GetTrackID();
-    G4ThreeVector vertexPos = thisHit->GetVertexPos();
-    vertexX[i] = vertexPos.getX();
-    vertexY[i] = vertexPos.getY();
-    vertexZ[i] = vertexPos.getZ();
+    //parentID[i] = thisHit->GetParentID();
+    //trackID[i] = thisHit->GetTrackID();
+    //G4ThreeVector vertexPos = thisHit->GetVertexPos();
+    //vertexX[i] = vertexPos.getX();
+    //vertexY[i] = vertexPos.getY();
+    //vertexZ[i] = vertexPos.getZ();
   }
   int j = 0;
   //output files is started...
@@ -116,10 +116,15 @@ void Run::RecordEvent(const G4Event* aEvent)
     {
       std::ofstream ofs1;
       ofs1.open("output/gammadata.bin",std::iostream::app | std::iostream::binary);
-      if (parName[i] == "gamma" and ((ener[i]<0.123 and ener[i]>0.122) or (ener[i]<0.137 and ener[i]>0.136) or (ener[i]<0.015 and ener[i]>0.014)))
+      if (parName[i] == "gamma" and (ener[i]<0.14 and ener[i]>0.1))
       {
         ofs1.write((char*)(&ener[i]), sizeof(double));
       }
+      if (parName[i] == "gamma" and (ener[i]<0.015 and ener[i]>0.014))
+      {
+        ofs1.write((char*)(&ener[i]), sizeof(double));
+      }
+      
       ofs1.close();
     }
    

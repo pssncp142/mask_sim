@@ -44,7 +44,7 @@
 DetectorConstruction::DetectorConstruction()
 {
 	//global options to be used in geometry
-  worldSize = 1*m;
+  worldSize = 200*m;
   detDistToMask = Messenger::detDistToMask;
   maskPixSize  = Messenger::maskPixSize;
   maskHeight = Messenger::maskHeight;
@@ -761,8 +761,8 @@ void DetectorConstruction::ConstructInclinedBox()
 void DetectorConstruction::ConstructDetector()
 {
   G4double width = 19.54*mm;
-  G4double height = 20*mm;
-  G4double distover2 = 0.6*mm; //1.2*mm;
+  G4double height = 5*mm;
+  G4double distover2 = 1.2*mm; //1.2*mm;
   G4VSolid* detect_sol = new G4Box("detect_sol",width*0.5*mm,width*0.5*mm,height*0.5*mm);
   detect_log = new G4LogicalVolume(detect_sol,CdZnTe,"detect_log");
   detect_log->SetVisAttributes(G4Color::Yellow());  

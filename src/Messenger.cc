@@ -15,15 +15,15 @@ G4double Messenger::detDistToMask = 34*mm;
 G4double Messenger::maskPixSize  = 1.2*mm;
 G4double Messenger::maskHeight = 2*mm;
 G4bool Messenger::spectrumOn = 0;
-G4bool Messenger::maskOn = 0;
-G4bool Messenger::detectorOn = 0;
-G4bool Messenger::inclboxOn = 0;
+G4bool Messenger::maskOn = 1;
+G4bool Messenger::detectorOn = 1;
+G4bool Messenger::inclboxOn = 1;
 G4bool Messenger::AlBoxCoverOn = 0;
 G4int Messenger::collimatorType = 0;
 G4int Messenger::sourceHolderType = 0;
-G4ThreeVector Messenger::sourceHolderPos = G4ThreeVector(0*mm,0*mm,0*mm);
+G4ThreeVector Messenger::sourceHolderPos = G4ThreeVector(0*mm,0*mm,30*mm);
 G4ThreeVector Messenger::sourceHolderRot = G4ThreeVector(0,0,0);
-G4ThreeVector Messenger::sourceRefPos = G4ThreeVector(0,0,0);
+G4ThreeVector Messenger::sourceRefPos = G4ThreeVector(0,0,30)*mm;
 
 Messenger::Messenger()
 {

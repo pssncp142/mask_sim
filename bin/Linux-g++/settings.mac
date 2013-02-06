@@ -1,0 +1,21 @@
+###################################################
+#Settings for mask_sim geant4 simulation
+###################################################
+
+/mask_sim/geom/mask/height 2 mm
+/mask_sim/geom/mask/pixSize 1.2 mm
+/mask_sim/geom/det/distToMask 49.5 mm
+/mask_sim/geom/det/fillBlank False
+/mask_sim/geom/collimator/type 0	
+/mask_sim/geom/sourceHolder/type 2
+/mask_sim/geom/sourceHolder/position 0 0 1000 mm
+
+# Warning!! do not change first value in the rotation
+/mask_sim/geom/sourceHolder/rotation 0. 0. 0.
+
+/mask_sim/output/binary False
+/mask_sim/output/text False
+/mask_sim/output/sourceProfile True
+
+/mask_sim/spectrum False
+###################################################

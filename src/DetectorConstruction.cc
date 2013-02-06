@@ -58,12 +58,6 @@ DetectorConstruction::DetectorConstruction()
   sourceHolderPos = Messenger::sourceHolderPos;
   sourceHolderRot = Messenger::sourceHolderRot;
   
-  // Is it a best way to do !!!!!!!!!!!!!!!!! Yes ;)
-  rotm = *(new G4RotationMatrix());
-  rotm.rotateX(sourceHolderRot.getX()*degree);
-  rotm.rotateY(sourceHolderRot.getY()*degree);
-  rotm.rotateZ(sourceHolderRot.getZ()*degree);      
-
   G4double sourceRefDist=0;  
   //shift of source holder due to existence of collimator...
   //And source distance is looked here...
@@ -79,12 +73,32 @@ DetectorConstruction::DetectorConstruction()
     if (sourceHolderType == 2){sourceRefDist = 5.25*cm;}
     shiftCollimator = 2.5*cm;
   }
-
+  
   //Position vector of the source is sended to messenger...
   G4ThreeVector sourceRefPos = G4ThreeVector(0,0,sourceRefDist);
-  sourceRefPos.rotateX(sourceHolderRot.getX()*degree);
-  sourceRefPos.rotateY(sourceHolderRot.getY()*degree);
-  sourceRefPos.rotateZ(sourceHolderRot.getZ()*degree);      
+  rotm = *(new G4RotationMatrix());
+  
+  if (Messenger::lookDedector)
+  {
+    G4ThreeVector pos_vec = sourceHolderPos + G4ThreeVector(0,0,detDistToMask);
+    pos_vec_unit = pos_vec.unit();
+    G4ThreeVector axis_vec = G4ThreeVector(0,0,1).cross(pos_vec);
+    G4double rot_deg = std::acos(pos_vec.dot(G4ThreeVector(0,0,1))/(std::sqrt(pos_vec.dot(pos_vec))*
+    std::sqrt(G4ThreeVector(0,0,1).dot(G4ThreeVector(0,0,1)))));
+    G4cout << " " << G4endl;
+    rotm.rotate(rot_deg,axis_vec);
+    sourceRefPos = sourceRefDist*pos_vec_unit;
+  }
+  else
+  {
+    sourceRefPos.rotateX(sourceHolderRot.getX()*degree);
+    sourceRefPos.rotateY(sourceHolderRot.getY()*degree);
+    sourceRefPos.rotateZ(sourceHolderRot.getZ()*degree);    
+    rotm.rotateX(sourceHolderRot.getX()*degree);
+    rotm.rotateY(sourceHolderRot.getY()*degree);
+    rotm.rotateZ(sourceHolderRot.getZ()*degree);        
+  }
+
   Messenger::sourceRefPos = sourceRefPos;
 }
 
@@ -607,9 +621,16 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          
          // Position of the holder.
          G4ThreeVector refFrame = G4ThreeVector(0,0,heightOfTheHolderFirst+shiftCollimator);
-         refFrame.rotateX(sourceHolderRot.getX()*degree);      
-         refFrame.rotateY(sourceHolderRot.getY()*degree);
-         refFrame.rotateZ(sourceHolderRot.getZ()*degree);         
+         if(Messenger::lookDedector)
+         {
+          refFrame = (heightOfTheHolderFirst+shiftCollimator)*pos_vec_unit;
+         }
+         else
+         {
+          refFrame.rotateX(sourceHolderRot.getX()*degree);      
+          refFrame.rotateY(sourceHolderRot.getY()*degree);
+          refFrame.rotateZ(sourceHolderRot.getZ()*degree);         
+         }
          G4ThreeVector holderUnionVolumePos = sourceHolderPos + refFrame;
          
          // Define logical and physical volume.
@@ -667,12 +688,19 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          G4SubtractionSolid*  secondSubtractVolume = new G4SubtractionSolid("secondSubtractVolume", firstSubtractVolume, thirdLeadInside, 0, zTransLead2);
          
          // Position of the holder.
-         G4ThreeVector refFrame1 = G4ThreeVector(0,0,heightOfTheLeadInside3);         
-         refFrame1.rotateX(sourceHolderRot.getX()*degree);      
-         refFrame1.rotateY(sourceHolderRot.getY()*degree); 
-         refFrame1.rotateZ(sourceHolderRot.getZ()*degree);         
+         G4ThreeVector refFrame1 = G4ThreeVector(0,0,heightOfTheLeadInside3);
+         if (Messenger::lookDedector)
+         {
+          refFrame1 = pos_vec_unit*heightOfTheLeadInside3;
+         }
+         else
+         {         
+          refFrame1.rotateX(sourceHolderRot.getX()*degree);      
+          refFrame1.rotateY(sourceHolderRot.getY()*degree); 
+          refFrame1.rotateZ(sourceHolderRot.getZ()*degree);
+         }         
          G4ThreeVector firstSubtractPos = sourceHolderPos + refFrame + refFrame1;
-         
+          
          // Definition of logical and physical volume.
          G4LogicalVolume* firstSubtractLogic = new G4LogicalVolume(secondSubtractVolume, Pb, "firstSubtractVolume",0,0,0);
          G4VPhysicalVolume* firstSubtractPhys = new G4PVPlacement(G4Transform3D(rotm, firstSubtractPos), firstSubtractLogic,
@@ -722,9 +750,16 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
                     
          // Position of the lead cover if the source holder is Am 241 or Cd 109.
          refFrame1 = G4ThreeVector(0,0,heightOfTheLeadInside1+heightOfTheSourceHolderCover2+heightOfTheHolderSecond/2.0-2.0*heightOfTheLeadInside3);
-         refFrame1.rotateX(sourceHolderRot.getX()*degree);
-         refFrame1.rotateY(sourceHolderRot.getY()*degree);
-         refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
+         if (Messenger::lookDedector)
+         {
+           refFrame1 = pos_vec_unit*(heightOfTheLeadInside1+heightOfTheSourceHolderCover2+heightOfTheHolderSecond/2.0-2.0*heightOfTheLeadInside3);
+         }
+         else
+         {
+          refFrame1.rotateX(sourceHolderRot.getX()*degree);
+          refFrame1.rotateY(sourceHolderRot.getY()*degree);
+          refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
+         }
          G4ThreeVector sourceHolderCoverPos = sourceHolderPos + refFrame + refFrame1;         
 
          // Physical volume of the cover id the source holder is Am 241 or Cd 109.

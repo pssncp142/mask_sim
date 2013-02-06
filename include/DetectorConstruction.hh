@@ -64,7 +64,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4ThreeVector sourceHolderPos;
 		G4ThreeVector sourceHolderRot;
 		G4double shiftCollimator;
+		G4bool lookDedector;
 		G4RotationMatrix rotm;
+		G4ThreeVector pos_vec_unit;
 		
   	G4Material* Air; G4Material* Pb;
   	G4Material* W;

@@ -44,16 +44,24 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
       posDist->SetCentreCoords(Messenger::sourceHolderPos+Messenger::sourceRefPos);	  
       
       G4ThreeVector rot_vec1,rot_vec2;
-      if (Messenger::sourceRefPos.getX() == 0)
+      if (Messenger::lookDedector)
       {
-        rot_vec1 = G4ThreeVector(1,0,0); 
-        rot_vec2 = G4ThreeVector(0,1,0);
+        G4ThreeVector pos_vec = G4ThreeVector (0,0,Messenger::detDistToMask) + Messenger::sourceHolderPos + Messenger::sourceRefPos;
+        rot_vec1 = G4ThreeVector(1,0,-pos_vec.getX()/pos_vec.getZ());
+        rot_vec2 = G4ThreeVector(0,1,-pos_vec.getY()/pos_vec.getZ());
       }
       else
       {
-        G4cout << Messenger::sourceRefPos.getX() << " " << Messenger::sourceRefPos.getY() << " " << Messenger::sourceRefPos.getZ() << G4endl;
-        rot_vec1 = G4ThreeVector(-Messenger::sourceRefPos.getY()/Messenger::sourceRefPos.getX(),1,0); 
-        rot_vec2 = G4ThreeVector(-Messenger::sourceRefPos.getZ()/Messenger::sourceRefPos.getX(),0,1);
+        if (Messenger::sourceRefPos.getX() == 0)
+        {
+          rot_vec1 = G4ThreeVector(1,0,0); 
+          rot_vec2 = G4ThreeVector(0,1,0);
+        }
+        else
+        {
+          rot_vec1 = G4ThreeVector(-Messenger::sourceRefPos.getY()/Messenger::sourceRefPos.getX(),1,0); 
+          rot_vec2 = G4ThreeVector(-Messenger::sourceRefPos.getZ()/Messenger::sourceRefPos.getX(),0,1);
+        }
       }
       
       posDist->SetPosRot1(rot_vec1);
@@ -65,7 +73,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
       posDist->SetRadius(2.6*mm);
       angDist->SetAngDistType("iso");
       angDist->SetMinTheta(0.*deg);
-      angDist->SetMaxTheta(1.*deg);
+      angDist->SetMaxTheta(3.*deg);
       eneDist->SetMonoEnergy(ener[i]);
     }
   }

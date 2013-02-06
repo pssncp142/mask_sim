@@ -28,6 +28,7 @@ class Messenger: public G4UImessenger
     static G4bool fillBlank;
     static G4double maskPixSize;
     static G4double maskHeight;
+    static G4bool lookDedector;
     static G4bool maskOn;
     static G4bool detectorOn;
     static G4bool inclboxOn;
@@ -59,6 +60,7 @@ class Messenger: public G4UImessenger
     G4UIcmdWithoutParameter* updateCmd;    
     G4UIcmdWithABool* spectrumOnCmd;
     G4UIcmdWithABool* fillBlankCmd;
+    G4UIcmdWithABool* lookDedectorCmd;
 
     G4UIdirectory* outputDir;
     G4UIcmdWithABool* outputBinaryCmd;

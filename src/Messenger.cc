@@ -16,6 +16,7 @@ G4double Messenger::maskPixSize  = 1.2*mm;
 G4double Messenger::maskHeight = 2*mm;
 G4bool Messenger::spectrumOn = 0;
 G4bool Messenger::sourceProfile = 0;
+G4bool Messenger::lookDedector = 0;
 G4bool Messenger::fillBlank = 0;
 G4bool Messenger::maskOn = 1;
 G4bool Messenger::detectorOn = 1;
@@ -88,8 +89,13 @@ Messenger::Messenger()
   sourceHolderPosCmd->AvailableForStates(G4State_PreInit);
   
   sourceHolderRotCmd = new G4UIcmdWith3Vector("/mask_sim/geom/sourceHolder/rotation",this);
-  sourceHolderRotCmd->SetGuidance("Rotation of the source holder (and probably for the source).");
+  sourceHolderRotCmd->SetGuidance("Rotation of the source holder.");
   sourceHolderRotCmd->AvailableForStates(G4State_PreInit);
+  
+  lookDedectorCmd = new G4UIcmdWithABool("/mask_sim/geom/sourceHolder/lookDedector",this);
+  lookDedectorCmd->SetGuidance("Source Holder looks directly the dedector. \n !!! (WARNING if you activate this option source holder rotation is desactivated as  expected.)");
+  lookDedectorCmd->SetParameterName("choice",false);
+  lookDedectorCmd->AvailableForStates(G4State_PreInit);
   
   outputBinaryCmd = new G4UIcmdWithABool("/mask_sim/output/binary",this);
   outputBinaryCmd->SetGuidance("Writes binary output file for true.");
@@ -161,5 +167,9 @@ void Messenger::SetNewValue(G4UIcommand* cmd, G4String val)
 	else if (cmd == fillBlankCmd)
 	{
 	  fillBlank=(fillBlankCmd->GetNewBoolValue(val));
+	}
+	else if (cmd == lookDedectorCmd)
+	{
+	  lookDedector=(lookDedectorCmd->GetNewBoolValue(val));
 	}
 }

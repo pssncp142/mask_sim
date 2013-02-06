@@ -15,6 +15,8 @@ G4double Messenger::detDistToMask = 34*mm;
 G4double Messenger::maskPixSize  = 1.2*mm;
 G4double Messenger::maskHeight = 2*mm;
 G4bool Messenger::spectrumOn = 0;
+G4bool Messenger::sourceProfile = 0;
+G4bool Messenger::fillBlank = 0;
 G4bool Messenger::maskOn = 1;
 G4bool Messenger::detectorOn = 1;
 G4bool Messenger::inclboxOn = 1;
@@ -65,6 +67,11 @@ Messenger::Messenger()
   detDistToMaskCmd->SetParameterName("choice",false);
   detDistToMaskCmd->AvailableForStates(G4State_PreInit);
   
+  fillBlankCmd = new G4UIcmdWithABool("/mask_sim/geom/det/fillBlank",this);
+  fillBlankCmd->SetGuidance("Fill blank spaces between detectors to analyse blank space response.");
+  fillBlankCmd->SetParameterName("choice",false);
+  fillBlankCmd->AvailableForStates(G4State_PreInit);
+  
   collimatorTypeCmd = new G4UIcmdWithAnInteger("/mask_sim/geom/collimator/type",this);
   collimatorTypeCmd->SetGuidance("Set the collimator type.");
   collimatorTypeCmd->SetParameterName("choice",false);
@@ -85,14 +92,19 @@ Messenger::Messenger()
   sourceHolderRotCmd->AvailableForStates(G4State_PreInit);
   
   outputBinaryCmd = new G4UIcmdWithABool("/mask_sim/output/binary",this);
-  outputBinaryCmd->SetGuidance("Writes binary output file for true");
+  outputBinaryCmd->SetGuidance("Writes binary output file for true.");
   outputBinaryCmd->SetParameterName("choice",false);
   outputBinaryCmd->AvailableForStates(G4State_PreInit);
 
   outputTextCmd = new G4UIcmdWithABool("/mask_sim/output/text",this);
-  outputTextCmd->SetGuidance("Writes text otuput file for true");
+  outputTextCmd->SetGuidance("Writes text otuput file for true.");
   outputTextCmd->SetParameterName("choice",false);
   outputTextCmd->AvailableForStates(G4State_PreInit);
+
+  sourceProfileCmd = new G4UIcmdWithABool("/mask_sim/output/sourceProfile",this);
+  sourceProfileCmd->SetGuidance("Writes source profile binary file for True.");
+  sourceProfileCmd->SetParameterName("choice",false);
+  sourceProfileCmd->AvailableForStates(G4State_PreInit);
 }
 
 Messenger::~Messenger()
@@ -141,5 +153,13 @@ void Messenger::SetNewValue(G4UIcommand* cmd, G4String val)
 	else if (cmd == spectrumOnCmd)
 	{
 	  spectrumOn=(spectrumOnCmd->GetNewBoolValue(val));
+	}
+	else if (cmd == sourceProfileCmd)
+	{
+	  sourceProfile=(sourceProfileCmd->GetNewBoolValue(val));
+	}
+	else if (cmd == fillBlankCmd)
+	{
+	  fillBlank=(fillBlankCmd->GetNewBoolValue(val));
 	}
 }

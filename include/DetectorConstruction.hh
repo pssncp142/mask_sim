@@ -88,6 +88,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4VPhysicalVolume* collAluminumSmallPhys;
     G4VSolid* World_sol;						G4LogicalVolume* World_log;		
     G4VPhysicalVolume* World_phys;  
+    G4LogicalVolume* blank1_log;
+    G4LogicalVolume* blank2_log;
 
     SensitiveDetector* sensDet;
 };

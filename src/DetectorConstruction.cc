@@ -85,7 +85,7 @@ DetectorConstruction::DetectorConstruction()
   sourceRefPos.rotateX(sourceHolderRot.getX()*degree);
   sourceRefPos.rotateY(sourceHolderRot.getY()*degree);
   sourceRefPos.rotateZ(sourceHolderRot.getZ()*degree);      
-  Messenger::sourceRefPos = sourceRefPos;  
+  Messenger::sourceRefPos = sourceRefPos;
 }
 
 /**********************************************************************************************/
@@ -767,12 +767,43 @@ void DetectorConstruction::ConstructDetector()
   detect_log = new G4LogicalVolume(detect_sol,CdZnTe,"detect_log");
   detect_log->SetVisAttributes(G4Color::Yellow());  
   
-  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*mm)*mm,detect_log,"detect_phys",World_log,false,0);
-  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*mm)*mm,detect_log,"detect_phys",World_log,false,0);
-  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*mm)*mm,detect_log,"detect_phys",World_log,false,0);
-  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*mm)*mm,detect_log,"detect_phys",World_log,false,0);
+  if (Messenger::fillBlank)
+  { 
+    G4RotationMatrix* rotm = new G4RotationMatrix();
+    rotm->rotateZ(90*degree);
+    G4VSolid* blank1_sol = new G4Box("blank_sol1",width*0.5*mm,1.2*mm,height*0.5*mm);
+    G4VSolid* blank2_sol = new G4Box("blank_sol2",1.2*mm,1.2*mm,height*0.5*mm);
+    blank1_log = new G4LogicalVolume(blank1_sol,CdZnTe,"blank1_log");
+    blank2_log = new G4LogicalVolume(blank2_sol,CdZnTe,"blank2_log");
+    G4VPhysicalVolume * blank2_phys = new G4PVPlacement(0,G4ThreeVector(0,0,-detDistToMask+2.5*mm),
+    blank2_log,"blank2_phys",World_log,false,0); 
+    G4VPhysicalVolume* blank1_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),0,-detDistToMask+2.5*mm),
+    blank1_log,"blank1_phys",World_log,false,0);
+    blank1_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),0,-detDistToMask+2.5*mm),
+    blank1_log,"blank1_phys",World_log,false,0);
+    blank1_phys = new G4PVPlacement(rotm,G4ThreeVector(0,(width*0.5+distover2),-detDistToMask+2.5*mm),
+    blank1_log,"blank1_phys",World_log,false,0);
+    blank1_phys = new G4PVPlacement(rotm,G4ThreeVector(0,-(width*0.5+distover2),-detDistToMask+2.5*mm),
+    blank1_log,"blank1_phys",World_log,false,0);
+    blank1_log->SetVisAttributes(G4Color::Yellow());  
+    blank2_log->SetVisAttributes(G4Color::Yellow());  
+  }
+  
+  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*mm)
+  ,detect_log,"detect_phys",World_log,false,0);
+  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*mm)
+  ,detect_log,"detect_phys",World_log,false,0);
+  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*mm)
+  ,detect_log,"detect_phys",World_log,false,0);
+  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*mm)
+  ,detect_log,"detect_phys",World_log,false,0);
 	
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
+	if (Messenger::fillBlank)
+	{
+	  blank1_log->SetSensitiveDetector(sensDet);
+	  blank2_log->SetSensitiveDetector(sensDet);
+	}
   detect_log->SetSensitiveDetector(sensDet);	
   SDman->AddNewDetector(sensDet);
 

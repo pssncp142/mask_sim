@@ -4,6 +4,7 @@
 #include "PrimaryGeneratorAction.hh"
 #include "DetectorConstruction.hh"
 
+#include "G4ThreeVector.hh"
 #include "G4Event.hh"
 #include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
@@ -15,7 +16,7 @@
  
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
-  //particleGun = new G4ParticleGun();
+  
   particleSource = new G4GeneralParticleSource();
   G4SPSPosDistribution *posDist;
   G4SPSAngDistribution *angDist;
@@ -41,18 +42,30 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
       angDist = particleSource->GetCurrentSource()->GetAngDist();
       eneDist = particleSource->GetCurrentSource()->GetEneDist();
       posDist->SetCentreCoords(Messenger::sourceHolderPos+Messenger::sourceRefPos);	  
-      G4ThreeVector rot_vec1 = G4ThreeVector(-Messenger::sourceRefPos.getY()/Messenger::sourceRefPos.getX(),1,0); 
-      G4ThreeVector rot_vec2 = G4ThreeVector(-Messenger::sourceRefPos.getZ()/Messenger::sourceRefPos.getX(),0,1);  
+      
+      G4ThreeVector rot_vec1,rot_vec2;
+      if (Messenger::sourceRefPos.getX() == 0)
+      {
+        rot_vec1 = G4ThreeVector(1,0,0); 
+        rot_vec2 = G4ThreeVector(0,1,0);
+      }
+      else
+      {
+        G4cout << Messenger::sourceRefPos.getX() << " " << Messenger::sourceRefPos.getY() << " " << Messenger::sourceRefPos.getZ() << G4endl;
+        rot_vec1 = G4ThreeVector(-Messenger::sourceRefPos.getY()/Messenger::sourceRefPos.getX(),1,0); 
+        rot_vec2 = G4ThreeVector(-Messenger::sourceRefPos.getZ()/Messenger::sourceRefPos.getX(),0,1);
+      }
+      
+      posDist->SetPosRot1(rot_vec1);
+      posDist->SetPosRot2(rot_vec2);
+      angDist->DefineAngRefAxes("angref1",rot_vec1);
+      angDist->DefineAngRefAxes("angref2",rot_vec2);
       posDist->SetPosDisType("Plane");
       posDist->SetPosDisShape("Circle");
       posDist->SetRadius(2.6*mm);
-      posDist->SetPosRot1(rot_vec1);
-      posDist->SetPosRot2(rot_vec2);
       angDist->SetAngDistType("iso");
-      angDist->DefineAngRefAxes("angref1",G4ThreeVector(-Messenger::sourceRefPos.getY()/Messenger::sourceRefPos.getX(),1,0));
-      angDist->DefineAngRefAxes("angref2",G4ThreeVector(-Messenger::sourceRefPos.getZ()/Messenger::sourceRefPos.getX(),0,1));
-      angDist->SetMinTheta(0.*degree);
-      angDist->SetMaxTheta(0.5*degree);
+      angDist->SetMinTheta(0.*deg);
+      angDist->SetMaxTheta(1.*deg);
       eneDist->SetMonoEnergy(ener[i]);
     }
   }
@@ -61,13 +74,30 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
-  //delete particleGun;
   delete particleSource;
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
-{
-  //creates gun controls
-  //particleSource->SetParticlePosition(G4ThreeVector(0*mm,0*mm,200*mm));
+{ 
+  if (Messenger::sourceProfile)
+  {
+    G4ThreeVector pos = particleSource->GetParticlePosition();
+    G4ThreeVector dir = particleSource->GetParticleMomentumDirection();
+    G4double ener = particleSource->GetParticleEnergy();
+    std::ofstream ofs;
+    G4double px = pos.getX(),py = pos.getY(),pz = pos.getZ();
+    G4double dx = dir.getX(),dy = dir.getY(),dz = dir.getZ();
+    ofs.open("output/sourceprofile.bin",std::iostream::app);
+    ofs.write((char*)(&px),sizeof(double));
+    ofs.write((char*)(&py),sizeof(double));
+    ofs.write((char*)(&pz),sizeof(double));
+    ofs.write((char*)(&dx),sizeof(double));
+    ofs.write((char*)(&dy),sizeof(double));
+    ofs.write((char*)(&dz),sizeof(double));
+    ofs.write((char*)(&ener),sizeof(double));
+    ofs.close();
+  }
+  
   particleSource->GeneratePrimaryVertex(anEvent);
+
 }

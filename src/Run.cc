@@ -114,18 +114,18 @@ void Run::RecordEvent(const G4Event* aEvent)
   {
     if (spectrumOn)
     {
-      std::ofstream ofs1;
-      ofs1.open("output/gammadata.bin",std::iostream::app | std::iostream::binary);
+      std::ofstream ofs;
+      ofs.open("output/gammadata.bin",std::iostream::app | std::iostream::binary);
       if (parName[i] == "gamma" and (ener[i]<0.14 and ener[i]>0.1))
       {
-        ofs1.write((char*)(&ener[i]), sizeof(double));
+        ofs.write((char*)(&ener[i]), sizeof(double));
       }
       if (parName[i] == "gamma" and (ener[i]<0.015 and ener[i]>0.014))
       {
-        ofs1.write((char*)(&ener[i]), sizeof(double));
+        ofs.write((char*)(&ener[i]), sizeof(double));
       }
       
-      ofs1.close();
+      ofs.close();
     }
    
     //binary data file...

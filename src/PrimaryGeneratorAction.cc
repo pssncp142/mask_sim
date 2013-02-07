@@ -73,7 +73,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
       posDist->SetRadius(2.6*mm);
       angDist->SetAngDistType("iso");
       angDist->SetMinTheta(0.*deg);
-      angDist->SetMaxTheta(3.*deg);
+      angDist->SetMaxTheta(0.2*deg);
       eneDist->SetMonoEnergy(ener[i]);
     }
   }

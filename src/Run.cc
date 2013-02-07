@@ -140,7 +140,7 @@ void Run::RecordEvent(const G4Event* aEvent)
         ofs.write((char*)(&yy[i]), sizeof(double));
         ofs.write((char*)(&zz[i]), sizeof(double));
         ofs.write((char*)(&edep[i]), sizeof(double));
-        ofs.write((char*)(&gTime[i]), sizeof(double));
+        //ofs.write((char*)(&gTime[i]), sizeof(double));
       }
       ofs.close();
     }

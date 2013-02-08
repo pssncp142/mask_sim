@@ -78,13 +78,13 @@ DetectorConstruction::DetectorConstruction()
   if (collimatorType == 0 or collimatorType == 2) 
   {  
     if (sourceHolderType == 1){sourceRefDist = 5.25*cm;} 
-    if (sourceHolderType == 2){sourceRefDist = 3.75*cm;}
+    if (sourceHolderType == 2 or sourceHolderType == 3){sourceRefDist = 3.75*cm;}
     shiftCollimator = 1.0*cm;
   } 
   else if (collimatorType == 1)
   {
     if (sourceHolderType == 1){sourceRefDist = 6.75*cm;} 
-    if (sourceHolderType == 2){sourceRefDist = 5.25*cm;}
+    if (sourceHolderType == 2 or sourceHolderType == 3){sourceRefDist = 5.25*cm;}
     shiftCollimator = 2.5*cm;
   }
   
@@ -847,7 +847,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
              refFrame2.rotateY(sourceHolderRot.getY()*degree); 
              refFrame2.rotateZ(sourceHolderRot.getZ()*degree);
            }         
-           G4ThreeVector sourceHolderCo57LeadPos = sourceHolderPos + refFrame2;
+           G4ThreeVector sourceHolderCo57LeadPos = sourceHolderPos + refFrame + refFrame2;
          
            // Define logical and physical volume.
            G4LogicalVolume* sourceHolderCo57LeadLogic = new G4LogicalVolume(sourceHolderLeadCo57, Pb, "sourceHolderLeadCo57",0,0,0);         
@@ -859,10 +859,10 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
            sourceHolderCo57LeadLogic->SetVisAttributes(visiblesourceHolderCo57Lead);
            
            // Position of the lead cover if the source holder is Co 57.
-           refFrame2 = G4ThreeVector(0,0,shiftCollimator+heightOfTheLeadInside1+heightOfTheSourceHolderCover2+heightOfTheHolderSecond/2.0);
+           refFrame2 = G4ThreeVector(0,0,heightOfTheLeadInside1+heightOfTheSourceHolderCover2+heightOfTheHolderSecond/2.0);
            if (Messenger::lookDedector)
            {
-             refFrame2 = pos_vec_unit*(shiftCollimator+heightOfTheLeadInside1+heightOfTheSourceHolderCover2+heightOfTheHolderSecond/2.0+2*cm);
+             refFrame2 = pos_vec_unit*(heightOfTheLeadInside1+heightOfTheSourceHolderCover2+heightOfTheHolderSecond/2.0);
            }
            else
            {         
@@ -870,7 +870,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
              refFrame2.rotateY(sourceHolderRot.getY()*degree); 
              refFrame2.rotateZ(sourceHolderRot.getZ()*degree);
            }         
-           G4ThreeVector sourceHolderCoverPos = sourceHolderPos + refFrame2;
+           G4ThreeVector sourceHolderCoverPos = sourceHolderPos + refFrame + refFrame2;
            // Physical volume of the cover if the source holder is Co 57.
            G4VPhysicalVolume* sourceHolderCoverPhys = new G4PVPlacement(G4Transform3D(rotm, sourceHolderCoverPos), sourceHolderCoverLogic,
                "sourceHolderCoverPhys", World_log, false, 0);

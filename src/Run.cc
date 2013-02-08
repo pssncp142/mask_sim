@@ -129,7 +129,7 @@ void Run::RecordEvent(const G4Event* aEvent)
     }
    
     //binary data file...
-    if (binaryOutput == 1)
+    if (binaryOutput)
     {
       std::ofstream ofs;
       ofs.open("output/data.bin",std::iostream::app | std::iostream::binary);
@@ -140,17 +140,16 @@ void Run::RecordEvent(const G4Event* aEvent)
         ofs.write((char*)(&yy[i]), sizeof(double));
         ofs.write((char*)(&zz[i]), sizeof(double));
         ofs.write((char*)(&edep[i]), sizeof(double));
-        //ofs.write((char*)(&gTime[i]), sizeof(double));
       }
       ofs.close();
     }
     
     //text data file...
-    if (textOutput==1)
+    if (textOutput)
     {
       std::ofstream ofs;
       ofs.open("output/data.txt",std::iostream::app);
-      if (true) //(parName[i] == "gamma") or (parName[i]=="e-"))
+      if ((parName[i] == "gamma") or (parName[i]=="e-"))
       {
         ofs << vertexX[i] << "  " << vertexY[i] << "  " << parName[i] << "  " << xx[i] << "  " << yy[i] << "  " << zz[i] << "  " << 
         edep[i] << "  " << ener[i] << "  " << gTime[i] << endl; 

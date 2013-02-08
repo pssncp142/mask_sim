@@ -63,7 +63,7 @@ DetectorConstruction::DetectorConstruction()
   {
     double xx = sourceHolderPos.getX()*0.001,yy = sourceHolderPos.getY()*0.001,zz = sourceHolderPos.getZ()*0.001;
     std::ofstream ofs;
-    ofs.open("output/data.bin",std::iostream::app);
+    ofs.open("output/runinfo.bin",std::iostream::app | std::iostream::binary);
     ofs.write((char*) &xx ,sizeof(double));
     ofs.write((char*) &yy ,sizeof(double));
     ofs.write((char*) &zz ,sizeof(double));
@@ -142,16 +142,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Geometry is building...
 	if (spectrumOn)
 	{
-	  G4cout <<  "*********** WARNING!!! RADIOACTIVE SPECTRUM GEOMETRY ********" << G4endl << G4endl;
+	  G4cout <<  "*********** WARNING!!! RADIOACTIVE SPECTRUM GEOMETRY ********" << G4endl;
 	  G4cout <<  " This means that actual simulation is not working, this is   " << G4endl <<
 	             " only for looking spectrum of given atoms. If it is not what " << G4endl <<
 	             " you are looking for you should disable spectrumOn option... " << G4endl;
 	  ConstructSpectrumMode();
-	  G4cout <<  "****************** GEOMETRY IS INITIALISED ******************" << G4endl << G4endl;
+	  G4cout <<  "******************** END OF GEOMETRY ************************" << G4endl << G4endl;
 	}
 	else
 	{
-	  G4cout <<  "******************* GEOMETRY OPTIONS ************************" << G4endl << G4endl;
+	  G4cout <<  "******************* GEOMETRY OPTIONS ************************" << G4endl;
 	  ConstructCollimator(collimatorType);
 	  ConstructSourceHolder(sourceHolderType);
 	  if (AlBoxCoverOn == 1) {ConstructAlBoxCover();} else 
@@ -162,8 +162,19 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	  {G4cout << "- No Detector" << G4endl;}
     if (maskOn == 1) {ConstructMask();} else 
 	  {G4cout << "- No Coded Mask" << G4endl;}
-	  G4cout << G4endl << "**************** GEOMETRY IS INITIALISED ********************" << G4endl << G4endl;
+	  G4cout << "******************** END OF GEOMETRY ************************" << G4endl << G4endl;
   }
+  
+  G4cout << "*********************** OUTPUT OPTIONS *************************" << G4endl;
+  if (Messenger::binaryOutput)
+  {G4cout << "- Binary output will be written to data/data.bin" << G4endl;}
+  else {G4cout << "- Binary output is inactive" << G4endl;}
+  if (Messenger::textOutput)
+  {G4cout << "- Text output will be written to data/data.txt" << G4endl;}
+  else {G4cout << "- Text output is inactive" << G4endl;}
+  G4cout << "- Initial values will be written to data/runinfo.bin" << G4endl;
+  G4cout << "NOTE : readgeantdata.pro reads binaries directly from output location..." << G4endl;
+  G4cout << "******************** END OF OUTPUT INFO ************************" << G4endl << G4endl;
    
   return World_phys;
 } 
@@ -509,10 +520,10 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
             spanningAngleOfTheHolder);
            
         // Define positions.
-        G4ThreeVector refFrame2 = G4ThreeVector(0,0,shiftCollimator-heightOfTheHolderCs137-heightOfTheHolderExtensionCs137);
+        G4ThreeVector refFrame2 = G4ThreeVector(0,0,shiftCollimator-heightOfTheHolderExtensionCs137);
         if (Messenger::lookDedector)
         {
-          refFrame2 = (shiftCollimator-heightOfTheHolderCs137-heightOfTheHolderExtensionCs137)*pos_vec_unit;
+          refFrame2 = (shiftCollimator-heightOfTheHolderExtensionCs137)*pos_vec_unit;
         }
         else
         {
@@ -921,10 +932,10 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
                spanningAngleOfTheHolder);
            
            // Position of the source holder extension.
-           G4ThreeVector refFrame2 = G4ThreeVector(0,0,shiftCollimator-heightOfTheHolderFirst-heightOfTheHolderExtension);
+           G4ThreeVector refFrame2 = G4ThreeVector(0,0,shiftCollimator-heightOfTheHolderExtension);
            if (Messenger::lookDedector)
            {
-             refFrame2 = pos_vec_unit*(shiftCollimator-heightOfTheHolderFirst-heightOfTheHolderExtension);
+             refFrame2 = pos_vec_unit*(shiftCollimator-heightOfTheHolderExtension);
            }
            else
            {
@@ -1045,7 +1056,7 @@ void DetectorConstruction::ConstructDetector()
 void DetectorConstruction::ConstructMask()
 {
   G4VSolid* pixel_sol = new G4Box("pixel_sol",maskPixSize*0.5*mm,maskPixSize*0.5*mm,maskHeight*0.5*mm);
-  G4VSolid* strip_sol = new G4Box("strip_sol",(36+0.5)*maskPixSize*mm,maskPixSize*0.5*mm,maskHeight*mm);
+  G4VSolid* strip_sol = new G4Box("strip_sol",(36+0.5)*maskPixSize*mm,maskPixSize*0.5*mm,maskHeight*0.5*mm);
   G4LogicalVolume* pixel_log = new G4LogicalVolume(pixel_sol,Pb,"pixel_log");
   G4LogicalVolume* strip_log = new G4LogicalVolume(strip_sol,Pb,"strip_log");
   

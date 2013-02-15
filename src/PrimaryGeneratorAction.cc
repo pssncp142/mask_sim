@@ -27,6 +27,37 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     posDist = particleSource->GetCurrentSource()->GetPosDist();
     posDist->SetCentreCoords(G4ThreeVector(0,0,0));	  
   }
+  else if (true)
+  {
+     //Building SU text source
+    G4double posx[22] = {-1.,-2.,-3.,-3.,-3.,-2.,-1.,-1.,-1.,-2.,-3.,1.,1.,1.,1.,1.,2.,3.,3.,3.,3.,3.};
+    G4double posy[22] = {2.,2.,2.,1.,0.,0.,0.,-1.,-2.,-2.,-2.,2.,1.,0.,-1.,-2.,-2.,-2.,-1.,0.,1.,2.};
+    for(int i = 0; i < 22; i++)
+    {
+      if (i != 0)
+      {particleSource->AddaSource(1.);}
+      particleSource->SetParticleDefinition(G4Gamma::GammaDefinition());
+      posDist = particleSource->GetCurrentSource()->GetPosDist();
+      angDist = particleSource->GetCurrentSource()->GetAngDist();
+      eneDist = particleSource->GetCurrentSource()->GetEneDist();
+      posDist->SetCentreCoords(G4ThreeVector(posx[i]*m,posy[i]*m,30.*m));	  
+      G4ThreeVector rot_vec1,rot_vec2;
+      G4ThreeVector pos_vec = G4ThreeVector (0,0,Messenger::detDistToMask) + G4ThreeVector(posx[i]*m,posy[i]*m,30.*m);
+      rot_vec1 = G4ThreeVector(1,0,-pos_vec.getX()/pos_vec.getZ());
+      rot_vec2 = G4ThreeVector(0,1,-pos_vec.getY()/pos_vec.getZ());
+      posDist->SetPosRot1(rot_vec1);
+      posDist->SetPosRot2(rot_vec2);
+      angDist->DefineAngRefAxes("angref1",rot_vec1);
+      angDist->DefineAngRefAxes("angref2",rot_vec2);
+      posDist->SetPosDisType("Plane");
+      posDist->SetPosDisShape("Circle");
+      posDist->SetRadius(2.*mm);
+      angDist->SetAngDistType("iso");
+      angDist->SetMinTheta(0.*deg);
+      angDist->SetMaxTheta(0.2*deg);
+      eneDist->SetMonoEnergy(122.*keV);    
+    }   
+  }
   else
   { 
     G4double prob[3] = {8.2,81.9,9.9};
@@ -73,11 +104,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
       posDist->SetRadius(2.6*mm);
       angDist->SetAngDistType("iso");
       angDist->SetMinTheta(0.*deg);
-      angDist->SetMaxTheta(0.2*deg);
+      angDist->SetMaxTheta(0.08*deg);
       eneDist->SetMonoEnergy(ener[i]);
     }
-  }
-
+  }  
 }   
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -105,7 +135,6 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     ofs.write((char*)(&ener),sizeof(double));
     ofs.close();
   }
-  
   particleSource->GeneratePrimaryVertex(anEvent);
 
 }

@@ -10,7 +10,7 @@
 /**********************************************************************************
   Notes :
   **(1) Find a solution for rotation of the volumes.
-  -G4Transform3D solves the problem rotates the problem in daughter volume coordinates 
+  -G4Transform3D solves the problem, it rotates the problem in daughter volume coordinates 
   **(2) Collimator definitions should be added.
   (3) Maybe it should be useful to import some static values.
 ***********************************************************************************/
@@ -59,7 +59,7 @@ DetectorConstruction::DetectorConstruction()
   sourceHolderRot = Messenger::sourceHolderRot;
   
   //information added to inside for IDL to create a suitable file name...
-  if (Messenger::binaryOutput)
+  if (true)//Messenger::binaryOutput)
   {
     double xx = sourceHolderPos.getX()*0.001,yy = sourceHolderPos.getY()*0.001,zz = sourceHolderPos.getZ()*0.001;
     std::ofstream ofs;

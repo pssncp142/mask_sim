@@ -54,7 +54,9 @@ int main(int argc,char** argv) {
   runManager->SetUserAction(prim);
 	RunAction* runAct = new RunAction();
 	runManager->SetUserAction(runAct);
-    
+
+  runManager->Initialize();
+      
   if (argc!=1)   // batch mode  
     { 
      G4String command = "/control/execute ";

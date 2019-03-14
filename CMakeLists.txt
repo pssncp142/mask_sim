@@ -25,6 +25,7 @@ target_link_libraries(mask_sim ${Geant4_LIBRARIES})
 set(MASKSIM_SCRIPTS
 		init_vis.mac
 		vis.mac
+		test.mac
 	)
 
 

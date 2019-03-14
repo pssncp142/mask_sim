@@ -3,6 +3,7 @@ Yigit Dallilar
 
 Geant Physics List
 ***********************************************************************/
+#include "CLHEP/Units/SystemOfUnits.h"
 
 #include "PhysicsList.hh"
 #include "G4UnitsTable.hh"
@@ -37,7 +38,7 @@ PhysicsList::PhysicsList() : G4VUserPhysicsList()
 {
   //add new units for radioActive decays
   // 
-  const G4double minute = 60*second;
+  const G4double minute = 60*CLHEP::second;
   const G4double hour   = 60*minute;
   const G4double day    = 24*hour;
   const G4double year   = 365*day;
@@ -95,19 +96,19 @@ void PhysicsList::GeneralPhysics()
 		if (particleName == "gamma")
 		{	
 		  G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-      thePhotoElectricEffect->SetModel(new G4PEEffectFluoModel());      	
+      thePhotoElectricEffect->SetEmModel(new G4PEEffectFluoModel());      	
 			pmanager->AddDiscreteProcess(thePhotoElectricEffect);
       
  	    G4ComptonScattering* theComptonScattering = new G4ComptonScattering();	
-   	  theComptonScattering->SetModel(new G4KleinNishinaModel());
+   	  theComptonScattering->SetEmModel(new G4KleinNishinaModel());
  	    pmanager->AddDiscreteProcess(theComptonScattering);
       
      	G4GammaConversion* theGammaConversion = new G4GammaConversion();
-      theGammaConversion->SetModel(new G4LivermoreGammaConversionModel());
+      theGammaConversion->SetEmModel(new G4LivermoreGammaConversionModel());
       pmanager->AddDiscreteProcess(theGammaConversion);
 
      	G4RayleighScattering* theRayleigh = new G4RayleighScattering();
-     	theRayleigh->SetModel(new G4XrayRayleighModel());
+     	theRayleigh->SetEmModel(new G4XrayRayleighModel());
      	pmanager->AddDiscreteProcess(theRayleigh);
 		}
 		if (particleName == "e-")
@@ -154,7 +155,7 @@ void PhysicsList::AtomicDeexcitation()
 void PhysicsList::RadioactiveDecay()
 {
 	G4RadioactiveDecay* radioactiveDecay = new G4RadioactiveDecay();
-  radioactiveDecay->SetHLThreshold(-1.*s);
+  radioactiveDecay->SetHLThreshold(-1.*CLHEP::s);
   radioactiveDecay->SetICM(true);		//Internal Conversion
   radioactiveDecay->SetARM(true);		//Atomic Rearangement
       
@@ -165,8 +166,8 @@ void PhysicsList::RadioactiveDecay()
 void PhysicsList::SetCuts()
 {
   SetCutsWithDefault();
-	SetCutValue(0.001*mm, "gamma");
-  SetCutValue(0.001*mm, "e-");
-  SetCutValue(0.001*mm, "e+");
+	SetCutValue(0.001*CLHEP::mm, "gamma");
+  SetCutValue(0.001*CLHEP::mm, "e-");
+  SetCutValue(0.001*CLHEP::mm, "e+");
 }
 

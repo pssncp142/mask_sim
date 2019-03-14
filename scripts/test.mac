@@ -2,6 +2,12 @@
 #Settings for mask_sim geant4 simulation
 ###################################################
 
+/control/verbose 0
+/process/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
 /mask_sim/geom/mask/height 2 mm
 /mask_sim/geom/mask/pixSize 1.2 mm
 /mask_sim/geom/det/distToMask 49.5 mm
@@ -14,8 +20,19 @@
 /mask_sim/geom/sourceHolder/rotation 0. 0. 0.
 
 /mask_sim/output/binary False
-/mask_sim/output/text False
+/mask_sim/output/text True
 /mask_sim/output/sourceProfile True
 
 /mask_sim/spectrum False
+
+/run/initialize
+/run/setCutForAGivenParticle e- 1e-3 mm
+
+
+/process/em/fluo true
+/process/em/auger true
+/process/em/pixe true
+
+
+/run/beamOn 10000
 ###################################################

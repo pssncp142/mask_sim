@@ -44,7 +44,7 @@
 DetectorConstruction::DetectorConstruction()
 {
 	//global options to be used in geometry
-  worldSize = 200*m;
+  worldSize = 200*CLHEP::m;
   detDistToMask = Messenger::detDistToMask;
   maskPixSize  = Messenger::maskPixSize;
   maskHeight = Messenger::maskHeight;
@@ -77,15 +77,15 @@ DetectorConstruction::DetectorConstruction()
   //And source distance is looked here...
   if (collimatorType == 0 or collimatorType == 2) 
   {  
-    if (sourceHolderType == 1){sourceRefDist = 5.25*cm;} 
-    if (sourceHolderType == 2 or sourceHolderType == 3){sourceRefDist = 3.75*cm;}
-    shiftCollimator = 1.0*cm;
+    if (sourceHolderType == 1){sourceRefDist = 5.25*CLHEP::cm;} 
+    if (sourceHolderType == 2 or sourceHolderType == 3){sourceRefDist = 3.75*CLHEP::cm;}
+    shiftCollimator = 1.0*CLHEP::cm;
   } 
   else if (collimatorType == 1)
   {
-    if (sourceHolderType == 1){sourceRefDist = 6.75*cm;} 
-    if (sourceHolderType == 2 or sourceHolderType == 3){sourceRefDist = 5.25*cm;}
-    shiftCollimator = 2.5*cm;
+    if (sourceHolderType == 1){sourceRefDist = 6.75*CLHEP::cm;} 
+    if (sourceHolderType == 2 or sourceHolderType == 3){sourceRefDist = 5.25*CLHEP::cm;}
+    shiftCollimator = 2.5*CLHEP::cm;
   }
   
   //Position vector of the source is sended to messenger...
@@ -107,12 +107,12 @@ DetectorConstruction::DetectorConstruction()
   }
   else
   {
-    sourceRefPos.rotateX(sourceHolderRot.getX()*degree);
-    sourceRefPos.rotateY(sourceHolderRot.getY()*degree);
-    sourceRefPos.rotateZ(sourceHolderRot.getZ()*degree);    
-    rotm.rotateX(sourceHolderRot.getX()*degree);
-    rotm.rotateY(sourceHolderRot.getY()*degree);
-    rotm.rotateZ(sourceHolderRot.getZ()*degree);        
+    sourceRefPos.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+    sourceRefPos.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+    sourceRefPos.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);    
+    rotm.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+    rotm.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+    rotm.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);        
   }
 
   Messenger::sourceRefPos = sourceRefPos;
@@ -183,7 +183,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 // Cosntructs radioactive spectrum test geometry... Nothing but a big sphere in the middle...
 void DetectorConstruction::ConstructSpectrumMode()
 {
-  G4VSolid* sphere_sol = new G4Sphere("sphere_sol",10*cm,11*cm,0,360,0,180);
+  G4VSolid* sphere_sol = new G4Sphere("sphere_sol",10*CLHEP::cm,11*CLHEP::cm,0,360,0,180);
   G4LogicalVolume* sphere_log = new G4LogicalVolume(sphere_sol,CdZnTe,"sphere_log",0,0,0);
   G4VPhysicalVolume *sphere_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),sphere_log,"sphere_phys",World_log,false,0);
   sphere_log->SetVisAttributes(G4Color::Red());
@@ -197,22 +197,22 @@ void DetectorConstruction::ConstructSpectrumMode()
 void DetectorConstruction::ConstructAlBoxCover()
 {
 //!!! Just little bit changes over the old simulation...
-    G4double AlBox1_x = 9.0*cm/2.0;
-    G4double AlBox1_y = 11.5*cm/2.0;
-    G4double AlBox1_z = 3.0*mm/2.0;
+    G4double AlBox1_x = 9.0*CLHEP::cm/2.0;
+    G4double AlBox1_y = 11.5*CLHEP::cm/2.0;
+    G4double AlBox1_z = 3.0*CLHEP::mm/2.0;
     
-    G4double AlBox2_x = 3.5*cm/2.0;
-    G4double AlBox2_y = 4.0*cm/2.0;
-    G4double AlBox2_z = 3.01*mm/2.0;
+    G4double AlBox2_x = 3.5*CLHEP::cm/2.0;
+    G4double AlBox2_y = 4.0*CLHEP::cm/2.0;
+    G4double AlBox2_z = 3.01*CLHEP::mm/2.0;
     
     G4VSolid* AlBoxCover1_sol = new G4Box("AlBoxCover1_sol",AlBox1_x,AlBox1_y,AlBox1_z);
     G4VSolid* AlBoxCover2_sol = new G4Box("AlBoxCover2_sol",AlBox2_x,AlBox2_y,AlBox2_z);
     
-    G4ThreeVector zTrans(0,AlBox2_y-AlBox1_y+0.6*cm,0);
+    G4ThreeVector zTrans(0,AlBox2_y-AlBox1_y+0.6*CLHEP::cm,0);
 
     G4SubtractionSolid*  AlBoxCover_sol = new G4SubtractionSolid("AlBoxCover_sol", AlBoxCover1_sol, AlBoxCover2_sol, 0, zTrans);
  
-    G4ThreeVector AlBoxCoverPos = G4ThreeVector(0,3.1*cm,300*mm);
+    G4ThreeVector AlBoxCoverPos = G4ThreeVector(0,3.1*CLHEP::cm,300*CLHEP::mm);
     
     G4LogicalVolume* AlBoxCover_log = new G4LogicalVolume(AlBoxCover_sol, Al,"AlBoxCover_log",0,0,0);
     AlBoxCover_phys = new G4PVPlacement(0, AlBoxCoverPos,AlBoxCover_log,"AlBoxCover_phys",World_log,false,0);
@@ -234,11 +234,11 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     case 1 :
     {
       // Define dimensions.
-    G4double innerRadiusOfTheTubeAlC = 0.7*mm;
-    G4double outerRadiusOfTheTubeAlC = 22.5*mm;
-    G4double heightOfTheTubeAlC = 0.8*cm/2.0;
-    G4double startAngleOfTheTube = 0*deg;
-    G4double spanningAngleOfTheTube = 360*deg;
+    G4double innerRadiusOfTheTubeAlC = 0.7*CLHEP::mm;
+    G4double outerRadiusOfTheTubeAlC = 22.5*CLHEP::mm;
+    G4double heightOfTheTubeAlC = 0.8*CLHEP::cm/2.0;
+    G4double startAngleOfTheTube = 0*CLHEP::deg;
+    G4double spanningAngleOfTheTube = 360*CLHEP::deg;
     
     // Define the volume.
     G4Tubs* collAluminumCover = new G4Tubs("Coll_AluminumCover", innerRadiusOfTheTubeAlC,
@@ -252,9 +252,9 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     }
     else
     {
-      refFrame.rotateX(sourceHolderRot.getX()*degree);
-      refFrame.rotateY(sourceHolderRot.getY()*degree);
-      refFrame.rotateZ(sourceHolderRot.getZ()*degree);      
+      refFrame.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+      refFrame.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+      refFrame.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);      
     }
     G4ThreeVector collAluminumCoverPos = sourceHolderPos + refFrame;
     
@@ -270,9 +270,9 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     // ------------------------------------------------------ //
     // Tungsten part of the collimator.
     // Define dimensions.
-    G4double innerRadiusOfTheTube = 0.35*mm;
-    G4double outerRadiusOfTheTube = 1.15*mm;
-    G4double heightOfTheTube = 0.5*cm/2.0;
+    G4double innerRadiusOfTheTube = 0.35*CLHEP::mm;
+    G4double outerRadiusOfTheTube = 1.15*CLHEP::mm;
+    G4double heightOfTheTube = 0.5*CLHEP::cm/2.0;
 
     // Define the volume.
     G4Tubs* collTungsten = new G4Tubs("Coll_Tungsten", innerRadiusOfTheTube,
@@ -286,9 +286,9 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     }
     else
     {
-      refFrame1.rotateX(sourceHolderRot.getX()*degree);
-      refFrame1.rotateY(sourceHolderRot.getY()*degree);
-      refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
+      refFrame1.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+      refFrame1.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+      refFrame1.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);      
     }
     G4ThreeVector collTungstenPos = sourceHolderPos + refFrame + refFrame1;
 
@@ -306,8 +306,8 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     // ------------------------------------------------------ //
     // Lead part of the collimator.
     // Define dimensions.
-    G4double innerRadiusOfTheTubeL = 1.15*mm;
-    G4double outerRadiusOfTheTubeL = 10.0*mm;
+    G4double innerRadiusOfTheTubeL = 1.15*CLHEP::mm;
+    G4double outerRadiusOfTheTubeL = 10.0*CLHEP::mm;
     
     // Define the volume.
     G4Tubs* collLead = new G4Tubs("Coll_Lead", innerRadiusOfTheTubeL,
@@ -331,9 +331,9 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     // Aluminum Cover.
     // Covers lead and tungsten parts.
     // Define dimensions.
-    G4double innerRadiusOfTheTubeAlB = 10.0*mm;
-    G4double outerRadiusOfTheTubeAlB = 22.5*mm;
-    G4double heightOfTheTubeAlB = 0.5*cm/2.0;
+    G4double innerRadiusOfTheTubeAlB = 10.0*CLHEP::mm;
+    G4double outerRadiusOfTheTubeAlB = 22.5*CLHEP::mm;
+    G4double heightOfTheTubeAlB = 0.5*CLHEP::cm/2.0;
     
     // Define the volume.
     G4Tubs* collAluminumBig = new G4Tubs("Coll_AluminumBig", innerRadiusOfTheTubeAlB,
@@ -347,9 +347,9 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     }
     else
     {
-      refFrame1.rotateX(sourceHolderRot.getX()*degree);
-      refFrame1.rotateY(sourceHolderRot.getY()*degree);
-      refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
+      refFrame1.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+      refFrame1.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+      refFrame1.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);      
     }
     G4ThreeVector collAluminumBigPos = sourceHolderPos + refFrame + refFrame1;
     
@@ -366,33 +366,33 @@ void DetectorConstruction::ConstructCollimator(G4int type)
     
     // ------------------------------------------------------ //
     // Aluminum cap.
-    G4double innerRadiusOfTheTubeAlS = 1.0*mm;
-    G4double outerRadiusOfTheTubeAlS = 22.5*mm;
-    G4double heightOfTheTubeAlS = 1.2*cm/2.0;
+    G4double innerRadiusOfTheTubeAlS = 1.0*CLHEP::mm;
+    G4double outerRadiusOfTheTubeAlS = 22.5*CLHEP::mm;
+    G4double heightOfTheTubeAlS = 1.2*CLHEP::cm/2.0;
    
     // Define the volumes.
-    G4Tubs* subtractVolume = new G4Tubs("subtractVolume",0.75*cm,outerRadiusOfTheTubeAlS+0.1*mm,1.0*cm/2.0,
+    G4Tubs* subtractVolume = new G4Tubs("subtractVolume",0.75*CLHEP::cm,outerRadiusOfTheTubeAlS+0.1*CLHEP::mm,1.0*CLHEP::cm/2.0,
         startAngleOfTheTube, spanningAngleOfTheTube);
     G4Tubs* collAluminumSmallBefore = new G4Tubs("Coll_AluminumSmallBefore", innerRadiusOfTheTubeAlS,
         outerRadiusOfTheTubeAlS, heightOfTheTubeAlS, startAngleOfTheTube, spanningAngleOfTheTube);
 
     // Needed for volume subtraction.
-    G4ThreeVector zTrans(0,0,+0.2*cm/2.0);
+    G4ThreeVector zTrans(0,0,+0.2*CLHEP::cm/2.0);
     
     // This is the remaining volume to be used.
     G4SubtractionSolid* collAluminumSmall = new G4SubtractionSolid("Coll_AluminumSmall", collAluminumSmallBefore, subtractVolume, 0, zTrans);
     
     // Position of the aluminum cap.
-    refFrame1 = G4ThreeVector(0,0,heightOfTheTubeAlC+heightOfTheTubeAlB+2*mm);
+    refFrame1 = G4ThreeVector(0,0,heightOfTheTubeAlC+heightOfTheTubeAlB+2*CLHEP::mm);
     if (Messenger::lookDedector)
     {
-      refFrame1 = (heightOfTheTubeAlC+heightOfTheTubeAlB+2*mm)*pos_vec_unit;
+      refFrame1 = (heightOfTheTubeAlC+heightOfTheTubeAlB+2*CLHEP::mm)*pos_vec_unit;
     }
     else
     {
-      refFrame1.rotateX(sourceHolderRot.getX()*degree);
-      refFrame1.rotateY(sourceHolderRot.getY()*degree);
-      refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
+      refFrame1.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+      refFrame1.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+      refFrame1.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);      
     }
     G4ThreeVector collAluminumSmallPos = sourceHolderPos + refFrame + refFrame1;
 
@@ -427,21 +427,21 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
     {            
       // ------------------------------------------------------ //
       // Define dimensions.
-      G4double innerRadiusOfTheHolderCs137 = 0.2*cm;
-      G4double outerRadiusOfTheHolderCs137 = 10.5*cm/2.0;
-      G4double heightOfTheHolderCs137 = 8.4*cm/2.0;
-      G4double startAngleOfTheHolder = 0*deg;
-      G4double spanningAngleOfTheHolder = 360*deg;
+      G4double innerRadiusOfTheHolderCs137 = 0.2*CLHEP::cm;
+      G4double outerRadiusOfTheHolderCs137 = 10.5*CLHEP::cm/2.0;
+      G4double heightOfTheHolderCs137 = 8.4*CLHEP::cm/2.0;
+      G4double startAngleOfTheHolder = 0*CLHEP::deg;
+      G4double spanningAngleOfTheHolder = 360*CLHEP::deg;
 
       // Inner cut.
-      G4double innerRadiusOfInnerCutCs137 = 0*cm;
-      G4double outerRadiusOfInnerCutCs137 = 6.8*cm/2.0;
-      G4double heightOfInnerCutCs137 = 7.3*cm/2.0;
+      G4double innerRadiusOfInnerCutCs137 = 0*CLHEP::cm;
+      G4double outerRadiusOfInnerCutCs137 = 6.8*CLHEP::cm/2.0;
+      G4double heightOfInnerCutCs137 = 7.3*CLHEP::cm/2.0;
 
       // Outer cut.
-      G4double innerRadiusOfOuterCutCs137 = 8.0*cm/2.0;
-      G4double outerRadiusOfOuterCutCs137 = 10.6*cm/2.0;
-      G4double heightOfOuterCutCs137 = 7.3*cm/2.0;
+      G4double innerRadiusOfOuterCutCs137 = 8.0*CLHEP::cm/2.0;
+      G4double outerRadiusOfOuterCutCs137 = 10.6*CLHEP::cm/2.0;
+      G4double heightOfOuterCutCs137 = 7.3*CLHEP::cm/2.0;
          
       // Define volumes.
       G4Tubs* InnerCut = new G4Tubs("InnerCut",
@@ -482,9 +482,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
       }
       else
       {
-        refFrame1.rotateX(sourceHolderRot.getX()*degree);
-        refFrame1.rotateY(sourceHolderRot.getY()*degree);
-        refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
+        refFrame1.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+        refFrame1.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+        refFrame1.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);      
       }
       G4ThreeVector AlCs137HolderPos = sourceHolderPos + refFrame1;
 
@@ -504,9 +504,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
       if (Messenger::collimatorType == 2)
       {
         // Define dimensions.
-        G4double innerRadiusOfTheHolderExtensionCs137 = 0.3*cm;
-        G4double outerRadiusOfTheHolderExtensionCs137 = 1.5*cm;
-        G4double heightOfTheHolderExtensionCs137 = 1.0*cm/2.0;
+        G4double innerRadiusOfTheHolderExtensionCs137 = 0.3*CLHEP::cm;
+        G4double outerRadiusOfTheHolderExtensionCs137 = 1.5*CLHEP::cm;
+        G4double heightOfTheHolderExtensionCs137 = 1.0*CLHEP::cm/2.0;
            
         // Eliminate the shift in position due to the existence of the collimator.
         shiftCollimator = 2.0*heightOfTheHolderExtensionCs137;
@@ -527,9 +527,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
         }
         else
         {
-          refFrame2.rotateX(sourceHolderRot.getX()*degree);
-          refFrame2.rotateY(sourceHolderRot.getY()*degree);
-          refFrame2.rotateZ(sourceHolderRot.getZ()*degree);      
+          refFrame2.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+          refFrame2.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+          refFrame2.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);      
         }
         G4ThreeVector sourceHolderExtensionCs137Pos = sourceHolderPos + refFrame2;
                    
@@ -548,15 +548,15 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          // ------------------------------------------------------ //
          // Lead inside the source holder Cs 137.
          // Define dimensions.
-         G4double innerRadiusOfTheLeadInside1 = 0.0*mm;
-         G4double outerRadiusOfTheLeadInside = 6.78*cm/2.0;
-         G4double heightOfTheLeadInside1 = 6.0*cm/2.0;
+         G4double innerRadiusOfTheLeadInside1 = 0.0*CLHEP::mm;
+         G4double outerRadiusOfTheLeadInside = 6.78*CLHEP::cm/2.0;
+         G4double heightOfTheLeadInside1 = 6.0*CLHEP::cm/2.0;
          
-         G4double outerRadiusOfTheLeadInside2 = 0.4*cm/2.0;
-         G4double heightOfTheLeadInside2 = 2.5*cm/2.0;
+         G4double outerRadiusOfTheLeadInside2 = 0.4*CLHEP::cm/2.0;
+         G4double heightOfTheLeadInside2 = 2.5*CLHEP::cm/2.0;
          
-         G4double outerRadiusOfTheLeadInside3 = 1.25*cm;
-         G4double heightOfTheLeadInside3 = 0.5*cm/2.0;
+         G4double outerRadiusOfTheLeadInside3 = 1.25*CLHEP::cm;
+         G4double heightOfTheLeadInside3 = 0.5*CLHEP::cm/2.0;
          
          // Define volumes.
          G4Tubs* firstLeadInsideCs137 = new G4Tubs("firstLeadInsideCs137",
@@ -581,7 +581,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
              spanningAngleOfTheHolder);
          
          // Subtract second lead from the first.
-         G4ThreeVector zTransLeadCs1371(0,0,-(heightOfTheLeadInside1-heightOfTheLeadInside2)-0.01*mm);
+         G4ThreeVector zTransLeadCs1371(0,0,-(heightOfTheLeadInside1-heightOfTheLeadInside2)-0.01*CLHEP::mm);
          G4SubtractionSolid*  firstSubtractCs137Volume = new G4SubtractionSolid("firstSubtractCs137Volume", firstLeadInsideCs137, secondLeadInsideCs137, 0, zTransLeadCs1371);
          
          // Subtract third lead from the remaining.
@@ -605,13 +605,13 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          // ------------------------------------------------------ //
          // Cap of the source holder for Cs 137.
          // Define dimensions.
-         G4double innerRadiusOfTheSourceHolderCoverCs1371 = 6.8*cm/2.0;
-         G4double outerRadiusOfTheSourceHolderCoverCs1371 = 8.02*cm/2.0;
-         G4double heightOfTheSourceHolderCoverCs1371 = 2.5*cm/2.0;
+         G4double innerRadiusOfTheSourceHolderCoverCs1371 = 6.8*CLHEP::cm/2.0;
+         G4double outerRadiusOfTheSourceHolderCoverCs1371 = 8.02*CLHEP::cm/2.0;
+         G4double heightOfTheSourceHolderCoverCs1371 = 2.5*CLHEP::cm/2.0;
          
-         G4double innerRadiusOfTheSourceHolderCoverCs1372 = 0.0*mm;
-         G4double outerRadiusOfTheSourceHolderCoverCs1372 = 8.0*cm/2.0;
-         G4double heightOfTheSourceHolderCoverCs1372 = 3.8*cm/2.0;
+         G4double innerRadiusOfTheSourceHolderCoverCs1372 = 0.0*CLHEP::mm;
+         G4double outerRadiusOfTheSourceHolderCoverCs1372 = 8.0*CLHEP::cm/2.0;
+         G4double heightOfTheSourceHolderCoverCs1372 = 3.8*CLHEP::cm/2.0;
          
          // Define volumes.
          G4Tubs* firstSourceHolderCs137Sub = new G4Tubs("firstSourceHolderCs137Sub",
@@ -629,7 +629,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
              spanningAngleOfTheHolder);
          
          // This is the shift needed to subtract correct part of the volume.        
-         G4ThreeVector zTransCoverCs137(0,0,+heightOfTheSourceHolderCoverCs1371-heightOfTheSourceHolderCoverCs1372-0.01*mm);
+         G4ThreeVector zTransCoverCs137(0,0,+heightOfTheSourceHolderCoverCs1371-heightOfTheSourceHolderCoverCs1372-0.01*CLHEP::mm);
          // This is the subtracted volume to be used ad a cap for the source holder.
          G4SubtractionSolid* sourceHolderCoverCs137 = new G4SubtractionSolid("sourceHolderCoverCs137", firstSourceHolderCs137Cover,
              firstSourceHolderCs137Sub, 0, zTransCoverCs137);
@@ -642,9 +642,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          }
          else
          {
-          refFrame2.rotateX(sourceHolderRot.getX()*degree);
-          refFrame2.rotateY(sourceHolderRot.getY()*degree);
-          refFrame2.rotateZ(sourceHolderRot.getZ()*degree);
+          refFrame2.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+          refFrame2.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+          refFrame2.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);
          }
          G4ThreeVector sourceHolderCoverCs137Pos = sourceHolderPos + refFrame1 + refFrame2;
         
@@ -666,16 +666,16 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
     case 3 :
     {
       // Define dimensions.
-         G4double innerRadiusOfTheHolderFirst = 0.2*cm;
-         G4double outerRadiusOfTheHolder= 22.5*mm;
-         G4double heightOfTheHolderFirst = 4.5*cm/2.0;
-         G4double startAngleOfTheHolder = 0*deg;
-         G4double spanningAngleOfTheHolder = 360*deg;
+         G4double innerRadiusOfTheHolderFirst = 0.2*CLHEP::cm;
+         G4double outerRadiusOfTheHolder= 22.5*CLHEP::mm;
+         G4double heightOfTheHolderFirst = 4.5*CLHEP::cm/2.0;
+         G4double startAngleOfTheHolder = 0*CLHEP::deg;
+         G4double spanningAngleOfTheHolder = 360*CLHEP::deg;
          
          // This is the part that will be subtracted.
-         G4double innerRadiusOfTheHolderSecond = 0.0*mm;
-         G4double outerRadiusOfTheHolderSecond = 1.75*cm;
-         G4double heightOfTheHolderSecond = 3.0005*cm/2.0;
+         G4double innerRadiusOfTheHolderSecond = 0.0*CLHEP::mm;
+         G4double outerRadiusOfTheHolderSecond = 1.75*CLHEP::cm;
+         G4double heightOfTheHolderSecond = 3.0005*CLHEP::cm/2.0;
              
          // Define volumes.
          G4Tubs* firstUnionVolume = new G4Tubs("firstUnionVolume",
@@ -706,9 +706,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          }
          else
          {
-          refFrame.rotateX(sourceHolderRot.getX()*degree);      
-          refFrame.rotateY(sourceHolderRot.getY()*degree);
-          refFrame.rotateZ(sourceHolderRot.getZ()*degree);         
+          refFrame.rotateX(sourceHolderRot.getX()*CLHEP::degree);      
+          refFrame.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+          refFrame.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);         
          }
          G4ThreeVector holderUnionVolumePos = sourceHolderPos + refFrame;
          
@@ -726,15 +726,15 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          // ------------------------------------------------------ //
          // Lead inside the source holder.
          // Define dimensions.
-         G4double innerRadiusOfTheLeadInside1 = 0.0*mm;
-         G4double outerRadiusOfTheLeadInside = 1.75*cm;
-         G4double heightOfTheLeadInside1 = 1.984*cm/2.0;
+         G4double innerRadiusOfTheLeadInside1 = 0.0*CLHEP::mm;
+         G4double outerRadiusOfTheLeadInside = 1.75*CLHEP::cm;
+         G4double heightOfTheLeadInside1 = 1.984*CLHEP::cm/2.0;
 
-         G4double outerRadiusOfTheLeadInside2 = 0.2*cm;
-         G4double heightOfTheLeadInside2 = 0.992*cm/2.0;
+         G4double outerRadiusOfTheLeadInside2 = 0.2*CLHEP::cm;
+         G4double heightOfTheLeadInside2 = 0.992*CLHEP::cm/2.0;
          
-         G4double outerRadiusOfTheLeadInside3 = 3.96*mm; // (For the old source 1.25 cm, for new source 3.96*mm)
-         G4double heightOfTheLeadInside3 = 0.496*cm/2.0; 
+         G4double outerRadiusOfTheLeadInside3 = 3.96*CLHEP::mm; // (For the old source 1.25 cm, for new source 3.96*mm)
+         G4double heightOfTheLeadInside3 = 0.496*CLHEP::cm/2.0; 
 
          // Define volumes.
          G4Tubs* firstLeadInside = new G4Tubs("firstLeadInside",
@@ -774,9 +774,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          }
          else
          {         
-          refFrame1.rotateX(sourceHolderRot.getX()*degree);      
-          refFrame1.rotateY(sourceHolderRot.getY()*degree); 
-          refFrame1.rotateZ(sourceHolderRot.getZ()*degree);
+          refFrame1.rotateX(sourceHolderRot.getX()*CLHEP::degree);      
+          refFrame1.rotateY(sourceHolderRot.getY()*CLHEP::degree); 
+          refFrame1.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);
          }         
          G4ThreeVector firstSubtractPos = sourceHolderPos + refFrame + refFrame1;
           
@@ -795,13 +795,13 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          // ------------------------------------------------------ //
          // Cap of the source holder.
          // Define dimensions.
-         G4double innerRadiusOfTheSourceHolderCover1 = 1.75*cm;
-         G4double outerRadiusOfTheSourceHolderCover1 = 2.344*cm;
-         G4double heightOfTheSourceHolderCover1 = 1.19*cm/2.0;
+         G4double innerRadiusOfTheSourceHolderCover1 = 1.75*CLHEP::cm;
+         G4double outerRadiusOfTheSourceHolderCover1 = 2.344*CLHEP::cm;
+         G4double heightOfTheSourceHolderCover1 = 1.19*CLHEP::cm/2.0;
 
-         G4double innerRadiusOfTheSourceHolderCover2 = 0.0*mm;
-         G4double outerRadiusOfTheSourceHolderCover2 = 2.304*cm;
-         G4double heightOfTheSourceHolderCover2 = 1.84*cm/2.0;
+         G4double innerRadiusOfTheSourceHolderCover2 = 0.0*CLHEP::mm;
+         G4double outerRadiusOfTheSourceHolderCover2 = 2.304*CLHEP::cm;
+         G4double heightOfTheSourceHolderCover2 = 1.84*CLHEP::cm/2.0;
          
          // Define volumes.
          G4Tubs* firstSourceHolderSub = new G4Tubs("firstSourceHolderSub",
@@ -819,7 +819,7 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
              spanningAngleOfTheHolder);
 
          // This is the shift needed to subtract correct part of the volume.
-         G4ThreeVector zTransCover(0,0,+heightOfTheSourceHolderCover1-heightOfTheSourceHolderCover2-0.01*mm);
+         G4ThreeVector zTransCover(0,0,+heightOfTheSourceHolderCover1-heightOfTheSourceHolderCover2-0.01*CLHEP::mm);
     
          // This is the volume to be used.
          G4SubtractionSolid* sourceHolderCover = new G4SubtractionSolid("sourceHolderCover", firstSourceHolderCover, firstSourceHolderSub,0, zTransCover);
@@ -832,11 +832,11 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
            
            // Lead piece for Co 57 closer to the source holder cap.
            // Define dimensions.
-           G4double innerRadiusOfTheLeadCo57 = 0.0*mm;
-           G4double outerRadiusOfTheLeadCo57 = 1.75*cm;
-           G4double heightOfTheLeadCo57 = 0.496*cm/2.0;
-           G4double startAngleOfTheHolder = 0*deg;
-           G4double spanningAngleOfTheHolder = 360*deg;
+           G4double innerRadiusOfTheLeadCo57 = 0.0*CLHEP::mm;
+           G4double outerRadiusOfTheLeadCo57 = 1.75*CLHEP::cm;
+           G4double heightOfTheLeadCo57 = 0.496*CLHEP::cm/2.0;
+           G4double startAngleOfTheHolder = 0*CLHEP::deg;
+           G4double spanningAngleOfTheHolder = 360*CLHEP::deg;
 
            // Define volumes.
            G4Tubs* sourceHolderLeadCo57 = new G4Tubs("sourceHolderLeadCo57",
@@ -854,9 +854,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
            }
            else
            {         
-             refFrame2.rotateX(sourceHolderRot.getX()*degree);      
-             refFrame2.rotateY(sourceHolderRot.getY()*degree); 
-             refFrame2.rotateZ(sourceHolderRot.getZ()*degree);
+             refFrame2.rotateX(sourceHolderRot.getX()*CLHEP::degree);      
+             refFrame2.rotateY(sourceHolderRot.getY()*CLHEP::degree); 
+             refFrame2.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);
            }         
            G4ThreeVector sourceHolderCo57LeadPos = sourceHolderPos + refFrame + refFrame2;
          
@@ -877,9 +877,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
            }
            else
            {         
-             refFrame2.rotateX(sourceHolderRot.getX()*degree);      
-             refFrame2.rotateY(sourceHolderRot.getY()*degree); 
-             refFrame2.rotateZ(sourceHolderRot.getZ()*degree);
+             refFrame2.rotateX(sourceHolderRot.getX()*CLHEP::degree);      
+             refFrame2.rotateY(sourceHolderRot.getY()*CLHEP::degree); 
+             refFrame2.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);
            }         
            G4ThreeVector sourceHolderCoverPos = sourceHolderPos + refFrame + refFrame2;
            // Physical volume of the cover if the source holder is Co 57.
@@ -898,9 +898,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
            }
            else
            {
-             refFrame1.rotateX(sourceHolderRot.getX()*degree);
-             refFrame1.rotateY(sourceHolderRot.getY()*degree);
-             refFrame1.rotateZ(sourceHolderRot.getZ()*degree);      
+             refFrame1.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+             refFrame1.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+             refFrame1.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);      
            }
            G4ThreeVector sourceHolderCoverPos = sourceHolderPos + refFrame1 + refFrame;         
 
@@ -916,9 +916,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
          if (Messenger::collimatorType == 2)
          {
            // Define dimensions.
-           G4double innerRadiusOfTheHolderExtension = 0.4*cm;
-           G4double outerRadiusOfTheHolderExtension = 0.75*cm;
-           G4double heightOfTheHolderExtension = 1.0*cm/2.0;
+           G4double innerRadiusOfTheHolderExtension = 0.4*CLHEP::cm;
+           G4double outerRadiusOfTheHolderExtension = 0.75*CLHEP::cm;
+           G4double heightOfTheHolderExtension = 1.0*CLHEP::cm/2.0;
            
            // Eliminate the shift in position due to the existence of the collimator.
            shiftCollimator = 2.0*heightOfTheHolderExtension;
@@ -939,9 +939,9 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
            }
            else
            {
-             refFrame2.rotateX(sourceHolderRot.getX()*degree);
-             refFrame2.rotateY(sourceHolderRot.getY()*degree);
-             refFrame2.rotateZ(sourceHolderRot.getZ()*degree);      
+             refFrame2.rotateX(sourceHolderRot.getX()*CLHEP::degree);
+             refFrame2.rotateY(sourceHolderRot.getY()*CLHEP::degree);
+             refFrame2.rotateZ(sourceHolderRot.getZ()*CLHEP::degree);      
            }
            G4ThreeVector sourceHolderExtensionPos = sourceHolderPos + refFrame2;         
    
@@ -975,15 +975,15 @@ void DetectorConstruction::ConstructSourceHolder(G4int type)
 // Constructs Inclined box ...(holder for the mask)
 void DetectorConstruction::ConstructInclinedBox()
 {
-	G4double wallThick = 3*mm;
-	G4double width1 = 95*0.5*mm;
-	G4double width2 = 45*0.5*mm;
+	G4double wallThick = 3*CLHEP::mm;
+	G4double width1 = 95*0.5*CLHEP::mm;
+	G4double width2 = 45*0.5*CLHEP::mm;
 	G4VSolid* inclbox1_sol = new G4Trd("inclbox1_sol",width2+wallThick,width1+wallThick,width2+wallThick,width1+wallThick,detDistToMask*0.55);
 	G4VSolid* inclbox2_sol = new G4Trd("inclbox2_sol",width2,width1,width2,width1,detDistToMask*0.551);
 	G4VSolid* inclbox_sol = new G4SubtractionSolid("inclbox_sol",inclbox1_sol,inclbox2_sol);
 	G4LogicalVolume* inclbox_log = new G4LogicalVolume(inclbox_sol,Al,"inclbox_log");
 	inclbox_log->SetVisAttributes(G4Color::Red());
-	inclbox_phys = new G4PVPlacement(0,G4ThreeVector(0,0,-detDistToMask*0.5)*mm,inclbox_log,"inclbox_phys",World_log,false,0);
+	inclbox_phys = new G4PVPlacement(0,G4ThreeVector(0,0,-detDistToMask*0.5)*CLHEP::mm,inclbox_log,"inclbox_phys",World_log,false,0);
 	G4cout << "- Inclined Box is build..." << G4endl;
 }
 
@@ -991,42 +991,42 @@ void DetectorConstruction::ConstructInclinedBox()
 // Constructs detectors ...
 void DetectorConstruction::ConstructDetector()
 {
-  G4double width = 19.54*mm;
-  G4double height = 5*mm;
-  G4double distover2 = 1.2*mm; //1.2*mm;
-  G4VSolid* detect_sol = new G4Box("detect_sol",width*0.5*mm,width*0.5*mm,height*0.5*mm);
+  G4double width = 19.54*CLHEP::mm;
+  G4double height = 5*CLHEP::mm;
+  G4double distover2 = 1.2*CLHEP::mm; //1.2*mm;
+  G4VSolid* detect_sol = new G4Box("detect_sol",width*0.5*CLHEP::mm,width*0.5*CLHEP::mm,height*0.5*CLHEP::mm);
   detect_log = new G4LogicalVolume(detect_sol,CdZnTe,"detect_log");
   detect_log->SetVisAttributes(G4Color::Yellow());  
   
   if (Messenger::fillBlank)
   { 
     G4RotationMatrix* rotm = new G4RotationMatrix();
-    rotm->rotateZ(90*degree);
-    G4VSolid* blank1_sol = new G4Box("blank_sol1",width*0.5*mm,1.2*mm,height*0.5*mm);
-    G4VSolid* blank2_sol = new G4Box("blank_sol2",1.2*mm,1.2*mm,height*0.5*mm);
+    rotm->rotateZ(90*CLHEP::degree);
+    G4VSolid* blank1_sol = new G4Box("blank_sol1",width*0.5*CLHEP::mm,1.2*CLHEP::mm,height*0.5*CLHEP::mm);
+    G4VSolid* blank2_sol = new G4Box("blank_sol2",1.2*CLHEP::mm,1.2*CLHEP::mm,height*0.5*CLHEP::mm);
     blank1_log = new G4LogicalVolume(blank1_sol,CdZnTe,"blank1_log");
     blank2_log = new G4LogicalVolume(blank2_sol,CdZnTe,"blank2_log");
-    G4VPhysicalVolume * blank2_phys = new G4PVPlacement(0,G4ThreeVector(0,0,-detDistToMask+2.5*mm),
+    G4VPhysicalVolume * blank2_phys = new G4PVPlacement(0,G4ThreeVector(0,0,-detDistToMask+2.5*CLHEP::mm),
     blank2_log,"blank2_phys",World_log,false,0); 
-    G4VPhysicalVolume* blank1_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),0,-detDistToMask+2.5*mm),
+    G4VPhysicalVolume* blank1_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),0,-detDistToMask+2.5*CLHEP::mm),
     blank1_log,"blank1_phys",World_log,false,0);
-    blank1_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),0,-detDistToMask+2.5*mm),
+    blank1_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),0,-detDistToMask+2.5*CLHEP::mm),
     blank1_log,"blank1_phys",World_log,false,0);
-    blank1_phys = new G4PVPlacement(rotm,G4ThreeVector(0,(width*0.5+distover2),-detDistToMask+2.5*mm),
+    blank1_phys = new G4PVPlacement(rotm,G4ThreeVector(0,(width*0.5+distover2),-detDistToMask+2.5*CLHEP::mm),
     blank1_log,"blank1_phys",World_log,false,0);
-    blank1_phys = new G4PVPlacement(rotm,G4ThreeVector(0,-(width*0.5+distover2),-detDistToMask+2.5*mm),
+    blank1_phys = new G4PVPlacement(rotm,G4ThreeVector(0,-(width*0.5+distover2),-detDistToMask+2.5*CLHEP::mm),
     blank1_log,"blank1_phys",World_log,false,0);
     blank1_log->SetVisAttributes(G4Color::Yellow());  
     blank2_log->SetVisAttributes(G4Color::Yellow());  
   }
   
-  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*mm)
+  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*CLHEP::mm)
   ,detect_log,"detect_phys",World_log,false,0);
-  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*mm)
+  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*CLHEP::mm)
   ,detect_log,"detect_phys",World_log,false,0);
-  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*mm)
+  detect_phys = new G4PVPlacement(0,G4ThreeVector(-(width*0.5+distover2),(width*0.5+distover2),-detDistToMask+2.5*CLHEP::mm)
   ,detect_log,"detect_phys",World_log,false,0);
-  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*mm)
+  detect_phys = new G4PVPlacement(0,G4ThreeVector((width*0.5+distover2),-(width*0.5+distover2),-detDistToMask+2.5*CLHEP::mm)
   ,detect_log,"detect_phys",World_log,false,0);
 	
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
@@ -1055,8 +1055,8 @@ void DetectorConstruction::ConstructDetector()
 // Constructs mask ...
 void DetectorConstruction::ConstructMask()
 {
-  G4VSolid* pixel_sol = new G4Box("pixel_sol",maskPixSize*0.5*mm,maskPixSize*0.5*mm,maskHeight*0.5*mm);
-  G4VSolid* strip_sol = new G4Box("strip_sol",(36+0.5)*maskPixSize*mm,maskPixSize*0.5*mm,maskHeight*0.5*mm);
+  G4VSolid* pixel_sol = new G4Box("pixel_sol",maskPixSize*0.5*CLHEP::mm,maskPixSize*0.5*CLHEP::mm,maskHeight*0.5*CLHEP::mm);
+  G4VSolid* strip_sol = new G4Box("strip_sol",(36+0.5)*maskPixSize*CLHEP::mm,maskPixSize*0.5*CLHEP::mm,maskHeight*0.5*CLHEP::mm);
   G4LogicalVolume* pixel_log = new G4LogicalVolume(pixel_sol,Pb,"pixel_log");
   G4LogicalVolume* strip_log = new G4LogicalVolume(strip_sol,Pb,"strip_log");
   
@@ -1080,7 +1080,7 @@ void DetectorConstruction::ConstructMask()
 	    {
 	      if (maskapf[i][j]==1)
 		{
-		  mask_phys = new G4PVPlacement(0,G4ThreeVector(-(xpos[k]+i),(ypos[k]-j),0)*maskPixSize*mm,
+		  mask_phys = new G4PVPlacement(0,G4ThreeVector(-(xpos[k]+i),(ypos[k]-j),0)*maskPixSize*CLHEP::mm,
 						pixel_log,"mask_phys",World_log,false,0);						
 		}
 	    }
@@ -1088,18 +1088,18 @@ void DetectorConstruction::ConstructMask()
     }
 
   mask_phys = new G4PVPlacement(0,G4ThreeVector(0,0,0),strip_log,"mask_phys",World_log,false,0);
-  mask_phys = new G4PVPlacement(0,G4ThreeVector(0,37,0)*maskPixSize*mm,strip_log,"mask_phys",World_log,false,0);
-  mask_phys = new G4PVPlacement(0,G4ThreeVector(0,-37,0)*maskPixSize*mm,strip_log,"mask_phys",World_log,false,0);
+  mask_phys = new G4PVPlacement(0,G4ThreeVector(0,37,0)*maskPixSize*CLHEP::mm,strip_log,"mask_phys",World_log,false,0);
+  mask_phys = new G4PVPlacement(0,G4ThreeVector(0,-37,0)*maskPixSize*CLHEP::mm,strip_log,"mask_phys",World_log,false,0);
   
   G4RotationMatrix* rotm = new G4RotationMatrix();
-  rotm->rotateZ(90*degree);
-  mask_phys = new G4PVPlacement(rotm,G4ThreeVector(37,0,0)*maskPixSize*mm,strip_log,"mask_phys",World_log,false,0);
-  mask_phys = new G4PVPlacement(rotm,G4ThreeVector(-37,0,0)*maskPixSize*mm,strip_log,"mask_phys",World_log,false,0);
+  rotm->rotateZ(90*CLHEP::degree);
+  mask_phys = new G4PVPlacement(rotm,G4ThreeVector(37,0,0)*maskPixSize*CLHEP::mm,strip_log,"mask_phys",World_log,false,0);
+  mask_phys = new G4PVPlacement(rotm,G4ThreeVector(-37,0,0)*maskPixSize*CLHEP::mm,strip_log,"mask_phys",World_log,false,0);
   
-  mask_phys = new G4PVPlacement(0,G4ThreeVector(37,37,0)*maskPixSize*mm,pixel_log,"mask_phys",World_log,false,0);
-  mask_phys = new G4PVPlacement(0,G4ThreeVector(-37,-37,0)*maskPixSize*mm,pixel_log,"mask_phys",World_log,false,0);
-  mask_phys = new G4PVPlacement(0,G4ThreeVector(-37,37,0)*maskPixSize*mm,pixel_log,"mask_phys",World_log,false,0);
-  mask_phys = new G4PVPlacement(0,G4ThreeVector(37,-37,0)*maskPixSize*mm,pixel_log,"mask_phys",World_log,false,0);	
+  mask_phys = new G4PVPlacement(0,G4ThreeVector(37,37,0)*maskPixSize*CLHEP::mm,pixel_log,"mask_phys",World_log,false,0);
+  mask_phys = new G4PVPlacement(0,G4ThreeVector(-37,-37,0)*maskPixSize*CLHEP::mm,pixel_log,"mask_phys",World_log,false,0);
+  mask_phys = new G4PVPlacement(0,G4ThreeVector(-37,37,0)*maskPixSize*CLHEP::mm,pixel_log,"mask_phys",World_log,false,0);
+  mask_phys = new G4PVPlacement(0,G4ThreeVector(37,-37,0)*maskPixSize*CLHEP::mm,pixel_log,"mask_phys",World_log,false,0);	
 
 	G4cout << "- Coded Mask is build..." << G4endl;
 }
@@ -1116,10 +1116,10 @@ void DetectorConstruction::DefineMaterials()
   Pb = GET_MATERIAL("G4_Pb");
   Al = GET_MATERIAL("G4_Al");
   W  = GET_MATERIAL("G4_W");
-  G4Element* Cd = new G4Element("Cadmium", symbol="Cd", z=48, a=112.411*g/mole);
-  G4Element* Zn = new G4Element("Zinc", symbol="Zn", z=30, a=65.39*g/mole);
-  G4Element* Te = new G4Element("Tellurium", symbol="Te", z=52, a=127.6*g/mole);
-  CdZnTe = new G4Material("CdZnTe",density=5.78*g/cm3,ncomponents=3);
+  G4Element* Cd = new G4Element("Cadmium", symbol="Cd", z=48, a=112.411*CLHEP::g/CLHEP::mole);
+  G4Element* Zn = new G4Element("Zinc", symbol="Zn", z=30, a=65.39*CLHEP::g/CLHEP::mole);
+  G4Element* Te = new G4Element("Tellurium", symbol="Te", z=52, a=127.6*CLHEP::g/CLHEP::mole);
+  CdZnTe = new G4Material("CdZnTe",density=5.78*CLHEP::g/CLHEP::cm3,ncomponents=3);
   CdZnTe->AddElement(Cd,natoms=9);
   CdZnTe->AddElement(Zn,natoms=1);
   CdZnTe->AddElement(Te,natoms=10);

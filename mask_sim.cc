@@ -28,9 +28,7 @@
 #include "G4VisExecutive.hh"
 #endif
 
-#ifdef G4UI_USE
 #include "G4UIExecutive.hh"
-#endif
 
 /*******************************************************************************/
 
@@ -41,7 +39,7 @@ int main(int argc,char** argv) {
   G4UImanager* UI = G4UImanager::GetUIpointer();  
   // mask_sim directory options are written over Messenger.cc which is general messenger for the simulation...
   // and use settings.mac to control this options...
-  UI->ApplyCommand("/control/execute settings.mac");
+  //UI->ApplyCommand("/control/execute settings.mac");
 
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
   
@@ -55,7 +53,7 @@ int main(int argc,char** argv) {
 	RunAction* runAct = new RunAction();
 	runManager->SetUserAction(runAct);
 
-  runManager->Initialize();
+  //runManager->Initialize();
       
   if (argc!=1)   // batch mode  
     { 
@@ -66,18 +64,23 @@ int main(int argc,char** argv) {
     
   else           // define visualization and UI terminal for interactive mode 
     { 
-#ifdef G4VIS_USE
-     G4VisManager* visManager = new G4VisExecutive;
-     visManager->Initialize();
-     UI->ApplyCommand("/control/execute vis.mac");          
-#endif
 
 #ifdef G4UI_USE
       G4UIExecutive * ui = new G4UIExecutive(argc,argv);      
+#endif
+
+#ifdef G4VIS_USE
+     G4VisManager* visManager = new G4VisExecutive;
+     visManager->Initialize();
+     UI->ApplyCommand("/control/execute init_vis.mac");          
+#endif
+
+
+#ifdef G4UI_USE
       ui->SessionStart();
       delete ui;
 #endif
-     
+
 #ifdef G4VIS_USE
      delete visManager;
 #endif     

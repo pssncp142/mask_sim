@@ -1,5 +1,8 @@
 /**********************************************************************
 **********************************************************************/
+
+#include "CLHEP/Units/SystemOfUnits.h"
+
 #include "Messenger.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "DetectorConstruction.hh"
@@ -14,6 +17,7 @@
 #include "G4Geantino.hh"
 #include "Randomize.hh"
  
+
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
   
@@ -40,9 +44,9 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
       posDist = particleSource->GetCurrentSource()->GetPosDist();
       angDist = particleSource->GetCurrentSource()->GetAngDist();
       eneDist = particleSource->GetCurrentSource()->GetEneDist();
-      posDist->SetCentreCoords(G4ThreeVector(posx[i]*m,posy[i]*m,30.*m));	  
+      posDist->SetCentreCoords(G4ThreeVector(posx[i]*CLHEP::m,posy[i]*CLHEP::m,30.*CLHEP::m));	  
       G4ThreeVector rot_vec1,rot_vec2;
-      G4ThreeVector pos_vec = G4ThreeVector (0,0,Messenger::detDistToMask) + G4ThreeVector(posx[i]*m,posy[i]*m,30.*m);
+      G4ThreeVector pos_vec = G4ThreeVector(0,0,Messenger::detDistToMask) + G4ThreeVector(posx[i]*CLHEP::m,posy[i]*CLHEP::m,30.*CLHEP::m);
       rot_vec1 = G4ThreeVector(1,0,-pos_vec.getX()/pos_vec.getZ());
       rot_vec2 = G4ThreeVector(0,1,-pos_vec.getY()/pos_vec.getZ());
       posDist->SetPosRot1(rot_vec1);
@@ -51,17 +55,17 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
       angDist->DefineAngRefAxes("angref2",rot_vec2);
       posDist->SetPosDisType("Plane");
       posDist->SetPosDisShape("Circle");
-      posDist->SetRadius(2.*mm);
+      posDist->SetRadius(2.*CLHEP::mm);
       angDist->SetAngDistType("iso");
-      angDist->SetMinTheta(0.*deg);
-      angDist->SetMaxTheta(0.2*deg);
-      eneDist->SetMonoEnergy(122.*keV);    
+      angDist->SetMinTheta(0.*CLHEP::deg);
+      angDist->SetMaxTheta(0.2*CLHEP::deg);
+      eneDist->SetMonoEnergy(122.*CLHEP::keV);    
     }   
   }
   else
   { 
     G4double prob[3] = {8.2,81.9,9.9};
-    G4double ener[3] = {14.4*keV,122.1*keV,136.5*keV};
+    G4double ener[3] = {14.4*CLHEP::keV,122.1*CLHEP::keV,136.5*CLHEP::keV};
     for (int i = 0; i < 3; i++)
     { 
       if (i == 0)
@@ -101,10 +105,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
       angDist->DefineAngRefAxes("angref2",rot_vec2);
       posDist->SetPosDisType("Plane");
       posDist->SetPosDisShape("Circle");
-      posDist->SetRadius(2.6*mm);
+      posDist->SetRadius(2.6*CLHEP::mm);
       angDist->SetAngDistType("iso");
-      angDist->SetMinTheta(0.*deg);
-      angDist->SetMaxTheta(0.08*deg);
+      angDist->SetMinTheta(0.*CLHEP::deg);
+      angDist->SetMaxTheta(0.08*CLHEP::deg);
       eneDist->SetMonoEnergy(ener[i]);
     }
   }  

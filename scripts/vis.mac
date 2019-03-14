@@ -1,32 +1,16 @@
 ###################################################
 # vis.mac  macro file for mask_sim                #
 ###################################################
-# Pre_Init State                                  #
-###################################################
-# special geometry commands                       #
-###################################################
-/control/verbose 0
-/process/verbose 0
-/run/verbose 0
-/event/verbose 0
-/tracking/verbose 0
-###################################################
-#/run/initialize
-###################################################
-# Idle State                                      #
 ###################################################
 #/grdm/allVolumes
 #/process/em/deexcitation World_log true true true
 ###################################################
-/process/em/fluo true
-/process/em/auger true
-/process/em/pixe true
-####################################################
-/vis/open OGL
+/vis/open OGL 600x600-0+0
 /vis/drawVolume
 /vis/drawView 90
-/vis/scene/add/trajectories
+/vis/scene/add/trajectories smooth
 /vis/scene/add/hits
+/vis/scene/endOfEventAction accumulate
 ###################################################
 #/gps/particle ion
 #/gps/ion 27 57
@@ -36,5 +20,5 @@
 #/gps/pos/halfy 0.36 mm
 #/gps/energy 0
 ##################################################
-#/run/beamOn 1
+/run/beamOn 100
 ###################################################
